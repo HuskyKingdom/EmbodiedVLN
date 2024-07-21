@@ -82,6 +82,11 @@ If you want to build an image that supports multiple architectures, please refer
 Install the NVIDIA Container Toolkit following [this](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) instruction.
 
 
+Note that in our implementation we use the following dependencies:
+
+- [ZED_SDK_Ubuntu18_cuda11.7_v3.8.2.zstd.run](https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/3.7/ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run)
+- [ZEDWrapper-tag-v3.8.x](https://github.com/stereolabs/zed-ros-wrapper)
+
 
 1. Enter the docker with cuda support:
 
@@ -90,14 +95,20 @@ docker run --gpus all -it j3soon/ros-melodic-husky bash
 ```
 
 
-2. Download & Install ZED SKD in home directory:
+2. Download & Install ZED SKD in `Home` directory:
 
 ```
 chmod +x ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run
 ./ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run -- silent
 ```
 
-3. Install the ROS Wrapper:
+3. Creating CUDA Symlink:
+
+```
+sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
+```
+
+4. Install the ROS Wrapper:
 
 ```
 cd ~/catkin_ws/src
@@ -108,6 +119,11 @@ catkin_make -DCMAKE_BUILD_TYPE=Release
 source ./devel/setup.bash
 ```
 
+5. Launch ROS Node:
+
+```
+roslaunch zed_wrapper zed2i.launch
+```
 
 
 #
