@@ -3,7 +3,7 @@
 <br />
 <div align="center" id="readme-top">
   
-  <h1 align="center">Docker image of running PID based wall follower on Husky</h1>
+  <h1 align="center">Embodied VLN on Husky</h1>
 
   <p align="center" >
 
@@ -35,7 +35,8 @@ Hardware:
 - Husky base
 - Power supply cable (for recharging the battery)
 - USB cable
-- Velodyne VLP-16 Lidar & Cable pack
+- ZED2i Camera
+- NVIDIA GPU and CUDA Installed
 
 We choose not to use the MINI-ITX computer, and control Husky directly through a Jetson board or laptop.
 
@@ -60,9 +61,6 @@ You should see `done` if everything works correctly.
 
 You need to reboot the host machine to make the udev rules take effect.
 
-#
-
-## Build Docker Images Locally
 
 - On amd64 machine:
 
@@ -78,6 +76,42 @@ docker build -f Dockerfile.jetson -t j3soon/ros-melodic-husky:latest .
 
 If you want to build an image that supports multiple architectures, please refer to the [build workflow](./.github/workflows/build.yaml).
 
+
+## Installing ZED Camera Dependencies
+
+Install the NVIDIA Container Toolkit following [this](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) instruction.
+
+
+
+1. Enter the docker with cuda support:
+
+```
+docker run --gpus all -it j3soon/ros-melodic-husky bash
+```
+
+
+2. Download & Install ZED SKD in home directory:
+
+```
+chmod +x ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run
+./ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run -- silent
+```
+
+
+3. Install the ROS Wrapper:
+
+```
+cd ~/catkin_ws/src
+git clone --branch v3.8.x --recursive https://github.com/stereolabs/zed-ros-wrapper.git
+cd ../
+rosdep install --from-paths src --ignore-src -r -y
+catkin_make -DCMAKE_BUILD_TYPE=Release
+source ./devel/setup.bash
+```
+
+
+
+#
 
 
 ## Running
@@ -100,7 +134,7 @@ Run the following to start all husky core nodes:
 ./docker-exec-bringup.sh
 ```
 
-### Setting lidar
+<!-- ### Setting lidar
 Power on your lidar and connect the ethernet cable to the laptop. Open a NEW terminal and run the following:
 
 ```
@@ -116,7 +150,7 @@ docker exec -it ros-melodic-husky bash
 
 roslaunch velodyne_pointcloud VLP16_points.launch
 ```
-You can find more supports on lidar nodes in [Velodyne ROS](https://wiki.ros.org/velodyne).
+You can find more supports on lidar nodes in [Velodyne ROS](https://wiki.ros.org/velodyne). -->
 
 
 ### Running PID Control
@@ -155,18 +189,7 @@ rosrun pid_controller pid_controller.py
 ```
 
 
-## Customize Guide
-<a id="customize"></a>
 
-### Inputs
-
-**Lidar Scan** - The program subscribes to `/scan` topic, which was published by [velodyne_laserscan](https://wiki.ros.org/velodyne_laserscan), it contains the scaned environment depth information, you could also subscribe to `/velodyne_points` topic to obtain raw 3D points data for more fixible useage. Find out more details about raw 3D points [here](velodyne_pointcloud).
-
-**Robot Odmetry** - The program demos a way of obtaining odmetry information from the robot, by subscribe to `/husky_velocity_controller/odom` topic, and then infer the total distance walked by the agent accordingly. Find out more about Husky control in [here](https://wiki.ros.org/husky_control).
-
-### Outputs
-
-**Robot Control** - The Husky robot is control by `geometry_msgs/Twist Message` like the mojority of the ROS robot, however the mechanical architecture of the Husky limits its DOF. In other words, it only supports moving in X axis and rotate along Z axis. The program provides a showcase of how to convert the partial movement order to full Twist form order. You can directly pass two simple float parameters (speed & angular) while calling PublishThread.update() to move the agent.
 
 ## Uninstall
 
