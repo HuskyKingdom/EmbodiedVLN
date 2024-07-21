@@ -97,7 +97,6 @@ chmod +x ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run
 ./ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run -- silent
 ```
 
-
 3. Install the ROS Wrapper:
 
 ```
