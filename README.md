@@ -98,7 +98,10 @@ docker run --gpus all -it j3soon/ros-melodic-husky bash
 2. Download & Install ZED SKD in `Home` directory:
 
 ```
+cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
+
 chmod +x ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run
+
 ./ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run -- silent
 ```
 
@@ -112,10 +115,15 @@ sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
 
 ```
 cd ~/catkin_ws/src
+
 git clone --branch v3.8.x --recursive https://github.com/stereolabs/zed-ros-wrapper.git
+
 cd ../
+
 rosdep install --from-paths src --ignore-src -r -y
+
 catkin_make -DCMAKE_BUILD_TYPE=Release
+
 source ./devel/setup.bash
 ```
 
