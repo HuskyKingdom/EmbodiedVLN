@@ -98,11 +98,11 @@ docker run --gpus all -it j3soon/ros-melodic-husky bash
 2. Download & Install ZED SKD in `Home` directory:
 
 ```
-cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
+cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/3.7/ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run
 
-chmod +x ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run
+chmod +x ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run
 
-./ZED_SDK_Ubuntu18_cuda11.1_v3.7.0.run -- silent
+./ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run -- silent
 ```
 
 3. Creating CUDA Symlink:
