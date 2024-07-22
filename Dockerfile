@@ -54,6 +54,7 @@ COPY 32db.xml /root/32db.xml
 # ZED
 RUN sudo apt-get install zstd
 RUN sudo apt-get install usbutils
+RUN sudo update-usbids
 
 # Install PID package
 RUN cd ~/catkin_ws/src \

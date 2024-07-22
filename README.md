@@ -88,14 +88,21 @@ Then install the ZED SDK and ZED ROS Wrappper, you need to install them with res
 - [ZEDWrapper-tag-v4.0.5](https://github.com/stereolabs/zed-ros-wrapper)
 
 
-1. Enter the docker with cuda support:
+
+1. Install ZED udev rules on the host:
 
 ```
-docker run --gpus all -it --device=/dev/bus/usb --privileged j3soon/ros-melodic-husky bash
+./zed_rules.sh
+```
+
+2. Enter the docker with cuda support:
+
+```
+docker run --gpus all -it --network host -v /dev:/dev --privileged j3soon/ros-melodic-husky:latest bash
 ```
 
 
-2. Download & Install ZED SKD in `Home` directory:
+3. Download & Install ZED SKD in `Home` directory:
 
 ```
 cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
@@ -105,13 +112,13 @@ chmod +x ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
 ./ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run -- silent
 ```
 
-3. With the corresponded verion of the CUDA Toolkit installed, creating CUDA symlink by the following:
+4. With the corresponded verion of the CUDA Toolkit installed, creating CUDA symlink by the following:
 
 ```
 sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
 ```
 
-4. Install the ROS Wrapper:
+5. Install the ROS Wrapper:
 
 ```
 cd ~/catkin_ws/src
