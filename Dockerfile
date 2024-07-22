@@ -51,6 +51,10 @@ RUN sudo apt-get update && sudo apt-get install ros-melodic-velodyne
 COPY 32db.xml /root/32db.xml
 
 
+# ZED
+RUN sudo apt-get install zstd
+RUN sudo apt-get install usbutils
+
 # Install PID package
 RUN cd ~/catkin_ws/src \
     && catkin_create_pkg pid_controller std_msgs rospy roscpp geometry_msgs sensor_msgs nav_msgs

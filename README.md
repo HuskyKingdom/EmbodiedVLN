@@ -82,30 +82,30 @@ If you want to build an image that supports multiple architectures, please refer
 Install the NVIDIA Container Toolkit following [this](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) instruction.
 
 
-Note that in our implementation we use the following dependencies:
+Then install the ZED SDK and ZED ROS Wrappper, you need to install them with respect to your CUDA version and Linux version, note that in our implementation we use the following dependencies:
 
-- [ZED_SDK_Ubuntu18_cuda11.7_v3.8.2.zstd.run](https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/3.7/ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run)
-- [ZEDWrapper-tag-v3.8.x](https://github.com/stereolabs/zed-ros-wrapper)
+- [ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run](https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run)
+- [ZEDWrapper-tag-v4.0.5](https://github.com/stereolabs/zed-ros-wrapper)
 
 
 1. Enter the docker with cuda support:
 
 ```
-docker run --gpus all -it j3soon/ros-melodic-husky bash
+docker run --gpus all -it --device=/dev/bus/usb --privileged j3soon/ros-melodic-husky bash
 ```
 
 
 2. Download & Install ZED SKD in `Home` directory:
 
 ```
-cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/3.7/ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run
+cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
 
-chmod +x ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run
+chmod +x ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
 
-./ZED_SDK_Ubuntu18_cuda11.7_v3.7.7.run -- silent
+./ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run -- silent
 ```
 
-3. Creating CUDA Symlink:
+3. With the corresponded verion of the CUDA Toolkit installed, creating CUDA symlink by the following:
 
 ```
 sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
@@ -116,7 +116,7 @@ sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
 ```
 cd ~/catkin_ws/src
 
-git clone --branch v3.8.x --recursive https://github.com/stereolabs/zed-ros-wrapper.git
+git clone --branch v4.0.8 --recursive https://github.com/stereolabs/zed-ros-wrapper.git
 
 cd ../
 
