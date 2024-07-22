@@ -116,7 +116,7 @@ sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
 ```
 cd ~/catkin_ws/src
 
-git clone --branch v4.0.8 --recursive https://github.com/stereolabs/zed-ros-wrapper.git
+git clone --branch v4.0.5 --recursive https://github.com/stereolabs/zed-ros-wrapper.git
 
 cd ../
 
