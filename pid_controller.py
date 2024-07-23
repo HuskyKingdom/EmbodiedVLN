@@ -364,7 +364,7 @@ class Husky_controllor:
         end_flag = 0
 
         while end_flag != -1:
-            action_index = input(f"Enter an action index to perform (-1 to exit):")
+            action_index = input("Enter an action index to perform (-1 to exit):")
             self.step_action(action_index)
             end_flag = action_index
         
