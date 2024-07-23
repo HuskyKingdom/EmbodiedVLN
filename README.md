@@ -185,25 +185,12 @@ roslaunch velodyne_pointcloud VLP16_points.launch
 You can find more supports on lidar nodes in [Velodyne ROS](https://wiki.ros.org/velodyne). -->
 
 
-### Running PID Control
+### Running Embodied Core Node
 
 Open a NEW terminal, and enter the running container:
 
 ```
 docker exec -it ros-melodic-husky bash
-```
-
-Config the make file for PID package:
-
-```
-vim ~/catkin_ws/src/pid_controller/CMakeLists.txt
-```
-Add the following:
-
-```
-catkin_install_python(PROGRAMS scripts/pid_controller.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
 ```
 
 Build the package and source the envrionment:
@@ -223,7 +210,7 @@ pip install -r requirements.txt
 Running the pid node:
 
 ```
-rosrun pid_controller pid_controller.py 
+rosrun embodied_vln embodied_core.py 
 ```
 
 

@@ -58,18 +58,18 @@ RUN sudo update-usbids
 
 # Install PID package
 RUN cd ~/catkin_ws/src \
-    && catkin_create_pkg pid_controller std_msgs rospy roscpp geometry_msgs sensor_msgs nav_msgs
+    && catkin_create_pkg embodied_vln std_msgs rospy roscpp geometry_msgs sensor_msgs nav_msgs
 
 RUN cd ~/catkin_ws \
     && . /opt/ros/melodic/setup.sh \
     && catkin_make \
-    && mkdir ~/catkin_ws/src/pid_controller/scripts
+    && mkdir ~/catkin_ws/src/embodied_vln/scripts
 
-COPY pid_controller.py /root/catkin_ws/src/pid_controller/scripts/pid_controller.py
-COPY CMakeLists.txt /root/catkin_ws/src/pid_controller/CMakeLists.txt
+COPY embodied_core.py /root/catkin_ws/src/embodied_vln/scripts/embodied_core.py
+COPY CMakeLists.txt /root/catkin_ws/src/embodied_vln/CMakeLists.txt
 
-RUN cd ~/catkin_ws/src/pid_controller/scripts \
-    && chmod +x pid_controller.py
+RUN cd ~/catkin_ws/src/embodied_vln/scripts \
+    && chmod +x embodied_core.py
 
 
 RUN cd ~/catkin_ws \

@@ -166,7 +166,7 @@ include_directories(
 #   scripts/my_python_script
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
-catkin_install_python(PROGRAMS scripts/pid_controller.py
+catkin_install_python(PROGRAMS scripts/embodied_core.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 ## Mark executables for installation
