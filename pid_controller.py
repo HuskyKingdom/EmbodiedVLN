@@ -40,7 +40,7 @@ class observation_monitor:
 
     def obs_callback(self,data):
         im = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
-        cv2.imshow('Camera View', im)
+        cv2.imshow('Embodied VLN ZED2i Camera', im)
         cv2.waitKey(1)
 
 
