@@ -378,8 +378,9 @@ settings = saveTerminalSettings()
 rospy.init_node('embodied_core')
 
 # core components
-husky_handle = Husky_controllor(args) # husky motion publisher
 observation_handle = observation_monitor() # zed img subscriber
+husky_handle = Husky_controllor(args) # husky motion publisher
+
 rospy.spin()
 
 
