@@ -473,5 +473,7 @@ settings = saveTerminalSettings()
 rospy.init_node('embodied_core')
 
 # pid controlloer [listening to lidar scan]
-app = Road_maker(args)
+# app = Road_maker(args)
+
+observation_handle = observation_monitor()
 
