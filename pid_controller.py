@@ -34,11 +34,11 @@ TwistMsg = Twist
 
 
 moveBindings = {
-        '0':(1,0,0,0),
-        '1':(0,0,0,1),
-        '2':(0,0,0,-1),
-        '3':(-1,0,0,0),
-        '4':(0,0,0,0),
+        0:(1,0,0,0),
+        1:(0,0,0,1),
+        2:(0,0,0,-1),
+        3:(-1,0,0,0),
+        4:(0,0,0,0),
     }
 
 
@@ -118,7 +118,7 @@ class PublishThread(threading.Thread):
 
     def stop(self):
         self.done = True
-        self.update("4")
+        self.update(4)
         self.join()
 
     def run(self):
@@ -328,7 +328,7 @@ class Husky_controllor:
 
         self.pub_thread = PublishThread(repeat)
         self.pub_thread.wait_for_subscribers()
-        self.pub_thread.update("4")
+        self.pub_thread.update(4)
 
         # self.distracker = DistanceTracker() 
 
@@ -349,7 +349,7 @@ class Husky_controllor:
 
     def step_action(self,action_index): # 0-forward 1-backward 2-left15 3-right-15 4-stop
 
-        if action_index == "-1" or action_index == "4": # invalid or stop action
+        if action_index == -1 or action_index == 4: # invalid or stop action
             return
         # publish to robot
         self.pub_thread.update(action_index)
@@ -365,7 +365,7 @@ class Husky_controllor:
 
         while end_flag != -1:
             action_index = input("Enter an action index to perform (-1 to exit):")
-            self.step_action(action_index)
+            self.step_action(int(action_index))
             end_flag = action_index
         
 
