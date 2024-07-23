@@ -36,7 +36,7 @@ TwistMsg = Twist
 class observation_monitor:
 
     def __init__(self):
-        sub_vis = rospy.Subscriber('/zed/right/image_rect_color', numpy_msg(Image), self.obs_callback)
+        sub_vis = rospy.Subscriber('/zed2i/zed_node/right/image_rect_color', numpy_msg(Image), self.obs_callback)
 
     def obs_callback(data):
         im = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
