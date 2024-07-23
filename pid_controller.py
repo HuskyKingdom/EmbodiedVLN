@@ -33,6 +33,15 @@ import cv2
 TwistMsg = Twist
 
 
+moveBindings = {
+        '0':(1,0,0,0),
+        '1':(0,0,0,1),
+        '2':(0,0,0,-1),
+        '3':(-1,0,0,0),
+        '4':(0,0,0,0),
+    }
+
+
 class observation_monitor:
 
     def __init__(self):
@@ -95,18 +104,14 @@ class PublishThread(threading.Thread):
         if rospy.is_shutdown():
             raise Exception("Got shutdown request before subscribers connected")
 
-    def update(self,speed,angular):
-        if abs(angular) >= 0.2:
-            self.x = 0
-        else:
-            self.x = 1
+    def update(self,action_index):
         self.condition.acquire()
-        # self.x = 1
-        self.y = 0
-        self.z = 0
-        self.th = 0
-        self.speed = speed
-        self.turn = angular
+        self.x = moveBindings[action_index][0]
+        self.y = moveBindings[action_index][1]
+        self.z = moveBindings[action_index][2]
+        self.th = moveBindings[action_index][3]
+        self.speed = 0.5
+        self.turn = 1.0
         # Notify publish thread that we have a new message.
         self.condition.notify()
         self.condition.release()
@@ -295,25 +300,12 @@ def euclidean(point1, point2):
 
 
 
-class Road_maker:
+class Husky_controllor:
 
 
     def __init__(self,args):
 
         self.args = args
-
-        self.walked_len = 0
-        self.adjusting = True
-        self.back = False
-        self.pre_point = None
-
-        # task params
-        self.target_distance = args.target_distance  # meters
-        self.integral_error = 0
-        self.previous_error = 0
-        self.ki = args.ki
-        self.kp = args.kp
-        self.kd = args.kd
 
 
         self.forward_speed = args.agent_speed
@@ -338,10 +330,10 @@ class Road_maker:
         self.pub_thread.wait_for_subscribers()
         self.pub_thread.update(0,0)
 
-        self.distracker = DistanceTracker() 
-        # lidar subscriber
-        rospy.Subscriber('/scan', LaserScan, self.lidar_callback)
-        rospy.spin()
+        # self.distracker = DistanceTracker() 
+
+        # waiting for action command
+        self.cml_action()
 
 
     def signal_handler(self,signal, frame):
@@ -351,118 +343,31 @@ class Road_maker:
         sys.exit(0)
 
 
-    def get_distance(self,point):
-        origin = (0,0)
-        return ((point[0] - origin[0]) ** 2 + (point[1] - origin[1]) ** 2) ** 0.5
-
-
-
-
-    # side: 0 - left |  1 - right
-    def get_distance(self,side,data):
-        
-        
-        if side == 0: # left
-            data = data[448:]
-            
-            # min data
-            min_data = min(data)
-
-        else: # right
-            data = data[:448]
-            min_data = min(data)
-            
-            
-        return min_data
-
-    
-    def lidar_callback(self,data):
-
-        assert isinstance(data, LaserScan)
-        
-        ranges = data.ranges
-        # print(data.angle_min) # -pi
-        # print(data.angle_max) # +pi
-        # print(data.angle_increment) # 0.007
- 
-        distance = self.get_distance(args.side,ranges)
-
-        
-        self.step_action(distance)
-
         
 
 
 
+    def step_action(self,action_index): # 0-forward 1-backward 2-left15 3-right-15 4-stop
 
-
-    
-    def get_walked_len(self):
-
-        # get walked length
-        print("Walked distance {}".format(self.distracker.total_distance))
-        return 5
-
-
-
-        
-    def adjust(self,wall_distance):
-
-        error = - (self.target_distance - wall_distance)
-
-        self.integral_error += error
-        derivative_error = error - self.previous_error
-
-        angular_velocity = (self.kp * error + self.ki * self.integral_error + self.kd * derivative_error)
-
-        ang_th = 1.2
-       
-        if angular_velocity >= ang_th:
-            angular_velocity = ang_th
-
-        
-        if angular_velocity <= -ang_th:
-            angular_velocity = -ang_th
-
-        
-        if self.args.side == 1:
-            angular_velocity = -angular_velocity
-
-        self.previous_error = error
-
-
-        print("wall dis: %.2f ; P: %.2f ; angular vel: %.2f" % (wall_distance,error, angular_velocity))
-
-        if not self.back:
-            return self.forward_speed, angular_velocity
-        else:
-            angular_velocity = 0.9 * error + 0.1 * derivative_error
-            return -self.forward_speed, -angular_velocity
-
-
-
-    def step_action(self,distance):
-        
-        if distance >= 90:
+        if action_index == "-1" or action_index == "4": # invalid or stop action
             return
-        forward, angular = self.adjust(distance)
         # publish to robot
-        self.pub_thread.update(forward,angular)
-
-        if self.get_walked_len() >= 13 and self.adjusting: # adjusting forward ends
-            self.adjusting = False
-            self.back = True
-            agent_poses = []
-
-
-        if self.back and self.get_walked_len() >= 6: # back to original
-            self.back = False
-            agent_poses = []
+        self.pub_thread.update(action_index)
+        rospy.sleep(1.0)
+        self.pub_thread.update("4")
 
        
         
 
+    def cml_action(self):
 
+        end_flag = 0
+
+        while end_flag != -1:
+            action_index = input(f"Enter an action index to perform (-1 to exit):")
+            self.step_action(action_index)
+            end_flag = action_index
+        
 
 
 
@@ -472,9 +377,10 @@ settings = saveTerminalSettings()
 
 rospy.init_node('embodied_core')
 
-# pid controlloer [listening to lidar scan]
-# app = Road_maker(args)
-
-observation_handle = observation_monitor()
+# core components
+husky_handle = Husky_controllor(args) # husky motion publisher
+observation_handle = observation_monitor() # zed img subscriber
 rospy.spin()
+
+
 cv2.destroyAllWindows()
