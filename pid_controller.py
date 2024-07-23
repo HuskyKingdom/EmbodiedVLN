@@ -475,5 +475,9 @@ rospy.init_node('embodied_core')
 # pid controlloer [listening to lidar scan]
 # app = Road_maker(args)
 
-observation_handle = observation_monitor()
 
+
+rospy.init_node('observation_monitor', anonymous=True)
+observation_handle = observation_monitor()
+rospy.spin()
+cv2.destroyAllWindows()
