@@ -95,10 +95,12 @@ Then install the ZED SDK and ZED ROS Wrappper, you need to install them with res
 ./zed_rules.sh
 ```
 
-2. Enter the docker with cuda support:
+2. Enter the docker with cuda support, display and network support:
 
 ```
-docker run --gpus all -it --network host -v /dev:/dev --privileged j3soon/ros-melodic-husky:latest bash
+xhost +si:localuser:root
+
+docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged j3soon/ros-melodic-husky:latest bash
 ```
 
 
@@ -210,6 +212,12 @@ Build the package and source the envrionment:
 cd ~/catkin_ws
 catkin_make
 source devel/setup.bash
+```
+
+
+Install the requirements:
+```
+pip install -r requirements.txt
 ```
 
 Running the pid node:

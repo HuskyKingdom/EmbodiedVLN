@@ -14,7 +14,7 @@ import sys
 from select import select
 import signal
 
-from sensor_msgs.msg import PointCloud2, LaserScan
+from sensor_msgs.msg import PointCloud2, LaserScan,Image
 from sensor_msgs import point_cloud2
 import time
 
@@ -26,7 +26,22 @@ else:
 
 from nav_msgs.msg import Odometry
 
+# Embodied VLN
+from rospy.numpy_msg import numpy_msg
+import cv2
+
 TwistMsg = Twist
+
+
+class observation_monitor:
+
+    def __init__(self):
+        sub_vis = rospy.Subscriber('navbot/camera/image', numpy_msg(Image), self.obs_callback)
+
+    def obs_callback(data):
+        im = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
+        cv2.imshow('Camera View', im)
+        cv2.waitKey(1)
 
 
 class DistanceTracker:
@@ -455,7 +470,7 @@ class Road_maker:
 args = parse_arguments()
 settings = saveTerminalSettings()
 
-rospy.init_node('pid_controller')
+rospy.init_node('embodied_core')
 
 # pid controlloer [listening to lidar scan]
 app = Road_maker(args)
