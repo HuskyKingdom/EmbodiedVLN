@@ -354,7 +354,7 @@ class Husky_controllor:
         # publish to robot
         self.pub_thread.update(action_index)
         rospy.sleep(1.0)
-        self.pub_thread.update("4")
+        self.pub_thread.update(4)
 
        
         
