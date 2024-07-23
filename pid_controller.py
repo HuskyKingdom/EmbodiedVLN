@@ -118,7 +118,7 @@ class PublishThread(threading.Thread):
 
     def stop(self):
         self.done = True
-        self.update(0, 0)
+        self.update("4")
         self.join()
 
     def run(self):
@@ -328,7 +328,7 @@ class Husky_controllor:
 
         self.pub_thread = PublishThread(repeat)
         self.pub_thread.wait_for_subscribers()
-        self.pub_thread.update(0,0)
+        self.pub_thread.update("4")
 
         # self.distracker = DistanceTracker() 
 
