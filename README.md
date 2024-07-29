@@ -3,18 +3,19 @@
 <br />
 <div align="center" id="readme-top">
   
-  <h1 align="center">Embodied VLN on Husky</h1>
+  <h1 align="center">Sim-to-Real Embodied VLN on Husky</h1>
 
   <p align="center" >
 
 
 
-[<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://hub.docker.com/r/j3soon/ros-melodic-husky/tags)
+[<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://github.com/airvlab/Embodied_Husky)
 
 
-This repo is based on [Husky Control Docker](https://github.com/j3soon/docker-ros-husky). Provides quick starting guide of using Husky A200 on ROS 1 Melodic with Velodyne Lidar sensor.  
+This repo is based on [Embodied_Husky](https://github.com/j3soon/docker-ros-husky).
 
-The demonstrated program controls the robot to move smoothly N meters from the wall, you may customize the brain of the robot easily by went through the repo. [Customize guide](#customize) is also included for you to better understand the I/Os.
+We follow the same settings of the simulated VLN agent defined in VLN-CE, the inputs to the agent are egocentric RGBD images with a resolution of **256×256** and a horizontal field-of-view of 90 degree; the action space of the agent is move **forward 0.25m, turn-left or turn-right 15 degrees, or stop**.
+
 
 
 <br />
@@ -65,13 +66,13 @@ You need to reboot the host machine to make the udev rules take effect.
 - On amd64 machine:
 
 ```sh
-docker build -f Dockerfile -t j3soon/ros-melodic-husky:latest .
+docker build -f Dockerfile -t yhs/embodiedVLN:latest .
 ```
 
 - On arm64 machine:
 
 ```sh
-docker build -f Dockerfile.jetson -t j3soon/ros-melodic-husky:latest .
+docker build -f Dockerfile.jetson -t yhs/embodiedVLN:latest .
 ```
 
 If you want to build an image that supports multiple architectures, please refer to the [build workflow](./.github/workflows/build.yaml).
@@ -100,7 +101,7 @@ Then install the ZED SDK and ZED ROS Wrappper, you need to install them with res
 ```
 xhost +si:localuser:root
 
-docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged j3soon/ros-melodic-husky:latest bash
+docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/embodiedVLN:latest bash
 ```
 
 
@@ -190,7 +191,7 @@ You can find more supports on lidar nodes in [Velodyne ROS](https://wiki.ros.org
 Open a NEW terminal, and enter the running container:
 
 ```
-docker exec -it ros-melodic-husky bash
+docker exec -it embodiedVLN bash
 ```
 
 Build the package and source the envrionment:
@@ -225,4 +226,12 @@ Uninstallation of udev rules must be done on the host machine:
 ```
 
 You should see `done` if everything works correctly.
+
+
+
+## Getting Start with Baselines
+
+We examinate two baselines from VLN-CE paper, the seq-2-seq model, and the cross-attention model.
+
+### Seq-2-Seq
 

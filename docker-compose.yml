@@ -1,8 +1,8 @@
 version: "3"
 services:
   ros-husky:
-    image: j3soon/ros-melodic-husky:latest
-    container_name: ros-melodic-husky
+    image: yhs/embodiedVLN:latest
+    container_name: embodiedVLN
     network_mode: "host"
     devices:
       - /dev/prolific:/dev/prolific

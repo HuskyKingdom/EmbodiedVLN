@@ -1,29 +1,22 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-
 import threading
-
 import roslib; roslib.load_manifest('teleop_twist_keyboard')
 import rospy
-
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TwistStamped
-
 import sys
 from select import select
 import signal
-
 from sensor_msgs.msg import PointCloud2, LaserScan,Image
 from sensor_msgs import point_cloud2
 import time
-
 if sys.platform == 'win32':
     import msvcrt
 else:
     import termios
     import tty
-
 from nav_msgs.msg import Odometry
 
 # Embodied VLN
@@ -173,22 +166,6 @@ class PublishThread(threading.Thread):
 
 
 
-
-def getKey(settings, timeout):
-    if sys.platform == 'win32':
-        # getwch() returns a string on Windows
-        key = msvcrt.getwch()
-    else:
-        tty.setraw(sys.stdin.fileno())
-        # sys.stdin.read() returns a string on Linux
-        rlist, _, _ = select([sys.stdin], [], [], timeout)
-        if rlist:
-            key = sys.stdin.read(1)
-        else:
-            key = ''
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-    return key
-
 def saveTerminalSettings():
     if sys.platform == 'win32':
         return None
@@ -198,23 +175,6 @@ def restoreTerminalSettings(old_settings):
     if sys.platform == 'win32':
         return
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-
-def vels(speed, turn):
-    return "currently:\tspeed %s\tturn %s " % (speed,turn)
-
-
-
-
-
-def spherical_to_cartesian(s):
-
-    R = s[0]
-    omega = s[1]
-    alpha = s[2]
-    x = R * np.cos(omega) * np.sin(alpha)
-    y = R * np.cos(alpha) * np.cos(omega)
-    z = R * np.sign(alpha)
-    return (x, y, z)
 
 
 
