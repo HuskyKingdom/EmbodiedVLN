@@ -46,8 +46,9 @@ class observation_monitor:
 
     def rgb_callback(self,data):
         rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
-        cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
-        cv2.waitKey(1)
+        # cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
+        # cv2.waitKey(1)
+        print("rgb received.")
 
     def dep_callback(self,data):
 
