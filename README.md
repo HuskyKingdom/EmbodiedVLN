@@ -9,7 +9,6 @@
 
 
 
-[<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://github.com/airvlab/Embodied_Husky)
 
 
 This repo is based on [this repo](https://github.com/j3soon/ros2-essentials/).
