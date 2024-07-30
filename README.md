@@ -66,13 +66,13 @@ You need to reboot the host machine to make the udev rules take effect.
 - On amd64 machine:
 
 ```sh
-docker build -f Dockerfile -t yhs/embodiedVLN:latest .
+docker build -f Dockerfile -t yhs/embodiedvln:latest .
 ```
 
 - On arm64 machine:
 
 ```sh
-docker build -f Dockerfile.jetson -t yhs/embodiedVLN:latest .
+docker build -f Dockerfile.jetson -t yhs/embodiedvln:latest .
 ```
 
 If you want to build an image that supports multiple architectures, please refer to the [build workflow](./.github/workflows/build.yaml).
@@ -101,7 +101,7 @@ Then install the ZED SDK and ZED ROS Wrappper, you need to install them with res
 ```
 xhost +si:localuser:root
 
-docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/embodiedVLN:latest bash
+docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/embodiedvln:latest bash
 ```
 
 
@@ -191,7 +191,7 @@ You can find more supports on lidar nodes in [Velodyne ROS](https://wiki.ros.org
 Open a NEW terminal, and enter the running container:
 
 ```
-docker exec -it embodiedVLN bash
+docker exec -it embodiedvln bash
 ```
 
 Build the package and source the envrionment:

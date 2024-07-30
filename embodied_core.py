@@ -303,10 +303,6 @@ class Husky_controllor:
         sys.exit(0)
 
 
-        
-
-
-
     def step_action(self,action_index): # 0-forward 1-backward 2-left15 3-right-15 4-stop
 
         if action_index == -1 or action_index == 4: # invalid or stop action
@@ -314,9 +310,6 @@ class Husky_controllor:
         # publish to robot
         self.pub_thread.update(action_index)
         rospy.sleep(1.0)
-
-       
-        
 
     def cml_action(self):
 
