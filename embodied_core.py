@@ -50,7 +50,23 @@ class observation_monitor:
         cv2.waitKey(1)
 
     def dep_callback(self,data):
-        depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
+
+        try:
+            depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
+
+            depth_image = np.nan_to_num(depth_image, nan=0.0) 
+            depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
+            depth_image_normalized = depth_image_normalized.astype(np.uint8)
+
+            depth_colormap = cv2.applyColorMap(depth_image_normalized, cv2.COLORMAP_JET)
+
+            cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_colormap)
+            cv2.waitKey(1)
+
+        except CvBridgeError as e:
+            print(e)
+
+        # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 
 
 
