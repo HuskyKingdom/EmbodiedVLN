@@ -52,14 +52,20 @@ class observation_monitor:
     def dep_callback(self,data):
 
         try:
+            # 将ROS消息转换为OpenCV图像
             depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
-
             print("shape {}".format(depth_image.shape))
 
-            # depth_image = np.nan_to_num(depth_image) 
+            # 设置最大深度值为5米
+            max_depth = 5.0
+            depth_image = np.nan_to_num(depth_image)  # 将NaN值替换为0
+            depth_image[depth_image > max_depth] = max_depth  # 将大于5米的深度值截断为5米
+
+            # 归一化到0到255
             depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
             depth_image_normalized = depth_image_normalized.astype(np.uint8)
 
+            # 显示深度图像
             cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
             cv2.waitKey(1)
 
