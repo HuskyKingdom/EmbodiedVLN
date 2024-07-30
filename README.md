@@ -3,7 +3,7 @@
 <br />
 <div align="center" id="readme-top">
   
-  <h1 align="center">Sim-to-Real Embodied VLN on Husky</h1>
+  <h1 align="center">Sim-to-Real Embodied VLN on Husky <br> In ROS-2 Humble</h1>
 
   <p align="center" >
 
@@ -12,7 +12,7 @@
 [<img src="https://img.shields.io/badge/dockerhub-image-important.svg?logo=docker">](https://github.com/airvlab/Embodied_Husky)
 
 
-This repo is based on [Embodied_Husky](https://github.com/j3soon/docker-ros-husky).
+This repo is based on [this repo](https://github.com/j3soon/ros2-essentials/).
 
 We follow the same settings of the simulated VLN agent defined in VLN-CE, the inputs to the agent are egocentric RGBD images with a resolution of **256×256** and a horizontal field-of-view of 90 degree; the action space of the agent is move **forward 0.25m, turn-left or turn-right 15 degrees, or stop**.
 
