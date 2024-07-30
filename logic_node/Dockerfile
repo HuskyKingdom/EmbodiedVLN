@@ -43,21 +43,21 @@ RUN conda create -n logicnode python=3.8 -y
 
 
 # logic package
-RUN cd ~/catkin_ws/src \
-    && catkin_create_pkg embodied_vln std_msgs rospy roscpp geometry_msgs sensor_msgs nav_msgs
+# RUN cd ~/catkin_ws/src \
+#     && catkin_create_pkg embodied_vln std_msgs rospy roscpp geometry_msgs sensor_msgs nav_msgs
 
-RUN cd ~/catkin_ws \
-    && . /opt/ros/melodic/setup.sh \
-    && catkin_make \
-    && mkdir ~/catkin_ws/src/embodied_vln/scripts
+# RUN cd ~/catkin_ws \
+#     && . /opt/ros/melodic/setup.sh \
+#     && catkin_make \
+#     && mkdir ~/catkin_ws/src/embodied_vln/scripts
 
-COPY embodied_core.py /root/catkin_ws/src/embodied_vln/scripts/embodied_core.py
-COPY CMakeLists.txt /root/catkin_ws/src/embodied_vln/CMakeLists.txt
+# COPY embodied_core.py /root/catkin_ws/src/embodied_vln/scripts/embodied_core.py
+# COPY CMakeLists.txt /root/catkin_ws/src/embodied_vln/CMakeLists.txt
 
-RUN cd ~/catkin_ws/src/embodied_vln/scripts \
-    && chmod +x embodied_core.py
+# RUN cd ~/catkin_ws/src/embodied_vln/scripts \
+#     && chmod +x embodied_core.py
 
 
-RUN cd ~/catkin_ws \
-    && . /opt/ros/melodic/setup.sh \
-    && catkin_make
+# RUN cd ~/catkin_ws \
+#     && . /opt/ros/melodic/setup.sh \
+#     && catkin_make
