@@ -18,6 +18,7 @@ We follow the same settings of the simulated VLN agent defined in VLN-CE, the in
 
 
 
+
 <br />
 <a href="https://yuhang.topsoftint.com">Contact me at: <strong>me@yhscode.com</strong></a>
 
@@ -43,13 +44,14 @@ We choose not to use the MINI-ITX computer, and control Husky directly through a
 
 More information such as User Guide and Manual Installation steps can be found in [this post](https://j3soon.com/cheatsheets/clearpath-husky/).
 
-## Installation
+
+## Before Everything
 
 Clone the repo:
 
 ```
-git clone https://github.com/HuskyKingdom/husky_road_making.git
-cd husky_road_making
+git clone https://github.com/HuskyKingdom/EmbodiedVLN
+cd EmbodiedVLN
 ```
 
 Installation of udev rules must be done on the host machine:
@@ -63,95 +65,21 @@ You should see `done` if everything works correctly.
 You need to reboot the host machine to make the udev rules take effect.
 
 
-- On amd64 machine:
+## Embodied Core Docker
+
+First install embodied core docker, which contains husky controlling nodes and embodied core nodes.
+
+```
+cd husky_ws/docker
+```
+
+On amd64 & arm64 machine, build the image by the following:
 
 ```sh
-docker build -f Dockerfile -t yhs/embodiedvln:latest .
+docker build -f Dockerfile -t yhs/embodiedvln_ros2:latest .
 ```
 
-- On arm64 machine:
-
-```sh
-docker build -f Dockerfile.jetson -t yhs/embodiedvln:latest .
-```
-
-If you want to build an image that supports multiple architectures, please refer to the [build workflow](./.github/workflows/build.yaml).
-
-
-## Installing ZED Camera Dependencies
-
-Install the NVIDIA Container Toolkit following [this](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) instruction.
-
-
-Then install the ZED SDK and ZED ROS Wrappper, you need to install them with respect to your CUDA version and Linux version, note that in our implementation we use the following dependencies:
-
-- [ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run](https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run)
-- [ZEDWrapper-tag-v4.0.5](https://github.com/stereolabs/zed-ros-wrapper)
-
-
-
-1. Install ZED udev rules on the host:
-
-```
-./zed_rules.sh
-```
-
-2. Enter the docker with cuda support, display and network support:
-
-```
-xhost +si:localuser:root
-
-docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/embodiedvln:latest bash
-```
-
-
-3. Download & Install ZED SKD in `Home` directory:
-
-```
-cd home/ && curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zedsdk/4.0/ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
-
-chmod +x ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run
-
-./ZED_SDK_Ubuntu18_cuda12.1_v4.0.8.zstd.run -- silent
-```
-
-4. With the corresponded verion of the CUDA Toolkit installed, creating CUDA symlink by the following:
-
-```
-sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
-```
-
-5. Install the ROS Wrapper:
-
-```
-cd ~/catkin_ws/src
-
-git clone --branch v4.0.5 --recursive https://github.com/stereolabs/zed-ros-wrapper.git
-
-cd ../
-
-rosdep install --from-paths src --ignore-src -r -y
-
-catkin_make -DCMAKE_BUILD_TYPE=Release
-
-source ./devel/setup.bash
-```
-
-5. Launch ROS Node:
-
-```
-roslaunch zed_wrapper zed2i.launch
-```
-
-
-#
-
-
-## Running
-
-### Running the container
-
-Connect and power on the Husky.
+Then connect and power on the Husky.
 
 Open terminal and run the following to start a container from local image:
 
@@ -159,74 +87,63 @@ Open terminal and run the following to start a container from local image:
 docker-compose up -d
 ```
 
-### Start Husky Core Nodes
 
-Run the following to start all husky core nodes:
-
-```
-./docker-exec-bringup.sh
-```
-
-<!-- ### Setting lidar
-Power on your lidar and connect the ethernet cable to the laptop. Open a NEW terminal and run the following:
+Enther the docker container and build the workspace:
 
 ```
-sudo ifconfig <port_name> 192.168.3.100
-sudo route add 192.168.1.201 <port_name>
-```
-Replace `<port_name>` with the port name of your connected ethernet port. If you are not sure with this, you could check the name of ethernet ports by `ifconfig -a`.
+docker exec -it embodiedvln_ros2 bash
 
-Once finish setting up the ip configs, on the same terminal, open the runnning container in IT mode and run the lidar nodes:
-
-```
-docker exec -it ros-melodic-husky bash
-
-roslaunch velodyne_pointcloud VLP16_points.launch
-```
-You can find more supports on lidar nodes in [Velodyne ROS](https://wiki.ros.org/velodyne). -->
-
-
-### Running Embodied Core Node
-
-Open a NEW terminal, and enter the running container:
-
-```
-docker exec -it embodiedvln bash
-```
-
-Build the package and source the envrionment:
-
-```
-cd ~/catkin_ws
-catkin_make
-source devel/setup.bash
+cd /home/ros2-agv-essentials/husky_ws
+rosdep update
+rosdep install --from-paths src --ignore-src --rosdistro humble -y
+colcon build
 ```
 
 
-Install the requirements:
-```
-pip install -r requirements.txt
-```
-
-Running the pid node:
+Start up the husky control nodes first:
 
 ```
-rosrun embodied_vln embodied_core.py 
+source ~/.bashrc
+./script/husky-bringup.sh
 ```
 
 
+## ZED Docker
 
 
-## Uninstall
+First install embodied core docker, which contains husky controlling nodes and embodied core nodes.
 
-Uninstallation of udev rules must be done on the host machine:
+```
+cd zed_ws/docker
+```
+
+On amd64 & arm64 machine, build the image by the following:
 
 ```sh
-./remove_udev_rules.sh
+docker build -f Dockerfile -t yhs/embodiedvln_ros2:latest .
 ```
 
-You should see `done` if everything works correctly.
+Open terminal and run the following to start a container from local image:
 
+```
+docker-compose up -d
+```
+
+Enther the docker container and build the workspace:
+
+```
+docker exec -it ros2_zed bash
+
+cd /home/ros2-agv-essentials/zed_ws
+colcon build --symlink-install
+```
+
+
+Starting ZED nodes by:
+
+```
+ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
+```
 
 
 ## Getting Start with Baselines
