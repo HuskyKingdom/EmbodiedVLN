@@ -22,6 +22,7 @@ from nav_msgs.msg import Odometry
 # Embodied VLN
 from rospy.numpy_msg import numpy_msg
 import cv2
+from cv_bridge import CvBridge, CvBridgeError
 
 TwistMsg = Twist
 
@@ -38,12 +39,19 @@ moveBindings = {
 class observation_monitor:
 
     def __init__(self):
-        sub_vis = rospy.Subscriber('/zed2i/zed_node/right/image_rect_color', numpy_msg(Image), self.obs_callback)
+        rgb_suber = rospy.Subscriber('/zed2i/zed_node/right/image_rect_color', numpy_msg(Image), self.obs_callback)
+        depth_suber = rospy.Subscriber('/zed2i/zed_node/depth/depth_registered', numpy_msg(Image), self.obs_callback)
+        self.bridge = CvBridge()
 
-    def obs_callback(self,data):
-        im = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
-        cv2.imshow('SORA-VLN ZED2i Camera', im)
+        
+    def rgb_callback(self,data):
+        rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
+        cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
         cv2.waitKey(1)
+
+    def dep_callback(self,data):
+        depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
+
 
 
 class DistanceTracker:
