@@ -56,7 +56,7 @@ RUN sudo apt-get install zstd
 RUN sudo apt-get install usbutils
 RUN sudo update-usbids
 
-# Install PID package
+# Install embodied vln package
 RUN cd ~/catkin_ws/src \
     && catkin_create_pkg embodied_vln std_msgs rospy roscpp geometry_msgs sensor_msgs nav_msgs
 

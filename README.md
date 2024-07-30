@@ -248,5 +248,11 @@ xhost +si:localuser:root
 docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/logicnode:latest bash
 ```
 
+Then install torch according to your cuda version, for cuda 12.4, run the following:
+
+```
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+```
+
 ### Seq-2-Seq
 
