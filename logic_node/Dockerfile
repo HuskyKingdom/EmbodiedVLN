@@ -40,6 +40,7 @@ RUN arch=$(uname -m) && \
 RUN conda --version
 RUN conda init
 RUN conda create -n logicnode python=3.8 -y
+RUN conda activate logicnode
 
 RUN pip install catkin-tools
 RUN pip install rospkg
