@@ -104,7 +104,7 @@ cd /home && sudo curl -O https://stereolabs.sfo2.cdn.digitaloceanspaces.com/zeds
 
 sudo chmod +x ZED_SDK_Ubuntu22_cuda12.1_v4.1.3.zstd.run
 
-./ZED_SDK_Ubuntu22_cuda12.1_v4.1.3.zstd.run -- silent
+sudo ./ZED_SDK_Ubuntu22_cuda12.1_v4.1.3.zstd.run -- silent
 ```
 
 4. With the corresponded verion of the CUDA Toolkit installed, creating CUDA symlink by the following:
@@ -116,23 +116,26 @@ sudo ln -s /usr/local/cuda-<Your Version> /usr/local/cuda
 5. Install the ROS Wrapper:
 
 ```
-cd ~/catkin_ws/src
+cd /home/ros2-agv-essentials/husky_ws/src/ 
 
-git clone --branch v4.0.5 --recursive https://github.com/stereolabs/zed-ros-wrapper.git
+git clone  --recursive https://github.com/stereolabs/zed-ros2-wrapper.git
+cd ..
 
-cd ../
+sudo apt update
 
 rosdep install --from-paths src --ignore-src -r -y
 
-catkin_make -DCMAKE_BUILD_TYPE=Release
+colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --parallel-workers $(nproc)
 
-source ./devel/setup.bash
+echo source $(pwd)/install/local_setup.bash >> ~/.bashrc
+
+source ~/.bashrc
 ```
 
 5. Launch ROS Node:
 
 ```
-roslaunch zed_wrapper zed2i.launch
+ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
 ```
 
 
