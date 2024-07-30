@@ -41,32 +41,18 @@ RUN conda --version
 RUN conda init
 RUN conda create -n logicnode python=3.8 -y
 
+RUN pip install catkin-tools
+RUN pip install rospkg
 
 # setting up ros
 
 RUN . /opt/ros/melodic/setup.sh && \
     mkdir -p ~/catkin_ws/src && \
-    cd ~/catkin_ws && \
-    apt-get update && \
-    catkin_make 
+    cd ~/catkin_ws
 
 # Install common tools
 RUN apt-get update && apt-get install -y git vim tmux \
     && rm -rf /var/lib/apt/lists/*
-
-# Setup Python environment
-# Ref: https://answers.ros.org/question/326226/importerror-dynamic-module-does-not-define-module-export-function-pyinit__tf2/
-RUN apt-get update \
-    && apt-get install -y python3-catkin-pkg-modules python3-rospkg-modules python3-empy \
-    && rm -rf /var/lib/apt/lists/*
-RUN apt-get update \
-    && apt-get install -y python3-pip \
-    && rm -rf /var/lib/apt/lists/*
-RUN pip3 install --upgrade pip
-# Install Python packages
-COPY requirements.txt /root/catkin_ws/
-RUN pip3 install -r /root/catkin_ws/requirements.txt
-
 
 
 # logic package
