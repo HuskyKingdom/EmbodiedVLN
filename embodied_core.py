@@ -52,7 +52,7 @@ class observation_monitor:
         cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
         cv2.waitKey(1)
         print("rgb received.")
-        
+
         # ZeroMQ Context and Socket
         byte_image = rgb_image.tobytes()
         context = zmq.Context()
@@ -62,6 +62,8 @@ class observation_monitor:
         socket.send(byte_image)
 
     def dep_callback(self,data):
+
+        pass
 
         # try:
 
