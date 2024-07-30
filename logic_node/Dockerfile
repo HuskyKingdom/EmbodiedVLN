@@ -38,3 +38,7 @@ RUN arch=$(uname -m) && \
     rm -f miniconda.sh
 
 RUN conda --version
+RUN conda init
+RUN conda create -n logicnode python=3.8 -y
+# torch dependencies
+RUN conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia -y
