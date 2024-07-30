@@ -38,12 +38,10 @@ RUN arch=$(uname -m) && \
     rm -f miniconda.sh
 
 RUN conda --version
-RUN conda init && conda activate base
+RUN conda init
 RUN conda create -n logicnode python=3.8 -y
-RUN conda activate logicnode
 
-RUN pip install catkin-tools
-RUN pip install rospkg
+
 
 # setting up ros
 
@@ -71,7 +69,3 @@ COPY CMakeLists.txt /root/catkin_ws/src/embodied_vln/CMakeLists.txt
 RUN cd ~/catkin_ws/src/embodied_vln/scripts \
     && chmod +x embodied_core.py
 
-
-RUN cd ~/catkin_ws \
-    && . /opt/ros/melodic/setup.sh \
-    && catkin_make
