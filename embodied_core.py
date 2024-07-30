@@ -54,7 +54,7 @@ class observation_monitor:
         try:
             depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
 
-            depth_image = np.nan_to_num(depth_image, nan=0.0) 
+            depth_image = np.nan_to_num(depth_image) 
             depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
             depth_image_normalized = depth_image_normalized.astype(np.uint8)
 
