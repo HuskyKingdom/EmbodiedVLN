@@ -38,7 +38,7 @@ RUN arch=$(uname -m) && \
     rm -f miniconda.sh
 
 RUN conda --version
-RUN conda init && source ~/.bashrc && conda activate base
+RUN conda init && conda activate base
 RUN conda create -n logicnode python=3.8 -y
 RUN conda activate logicnode
 
