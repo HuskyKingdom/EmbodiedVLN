@@ -24,6 +24,9 @@ from rospy.numpy_msg import numpy_msg
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
+# middleware
+import zmq
+
 TwistMsg = Twist
 
 
@@ -46,31 +49,39 @@ class observation_monitor:
 
     def rgb_callback(self,data):
         rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
-        # cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
-        # cv2.waitKey(1)
+        cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
+        cv2.waitKey(1)
         print("rgb received.")
+        
+        # ZeroMQ Context and Socket
+        byte_image = rgb_image.tobytes()
+        context = zmq.Context()
+        socket = context.socket(zmq.PUB)
+        socket.bind("tcp://*:5555")
+
+        socket.send(byte_image)
 
     def dep_callback(self,data):
 
-        try:
+        # try:
 
-            depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
-            print("shape {}".format(depth_image.shape))
-
-
-            max_depth = 5.0
-            depth_image = np.nan_to_num(depth_image)  
-            depth_image[depth_image > max_depth] = max_depth  
-
-            depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
-            depth_image_normalized = depth_image_normalized.astype(np.uint8)
+        #     depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
+        #     print("shape {}".format(depth_image.shape))
 
 
-            cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
-            cv2.waitKey(1)
+        #     max_depth = 5.0
+        #     depth_image = np.nan_to_num(depth_image)  
+        #     depth_image[depth_image > max_depth] = max_depth  
 
-        except CvBridgeError as e:
-            print(e)
+        #     depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
+        #     depth_image_normalized = depth_image_normalized.astype(np.uint8)
+
+
+        #     cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
+        #     cv2.waitKey(1)
+
+        # except CvBridgeError as e:
+        #     print(e)
 
         # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 

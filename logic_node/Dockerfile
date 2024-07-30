@@ -44,7 +44,6 @@ RUN conda create -n logicnode python=3.8 -y
 
 
 # setting up ros
-
 RUN . /opt/ros/melodic/setup.sh && \
     mkdir -p ~/catkin_ws/src && \
     cd ~/catkin_ws
