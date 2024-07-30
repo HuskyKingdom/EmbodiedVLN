@@ -58,9 +58,7 @@ class observation_monitor:
             depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
             depth_image_normalized = depth_image_normalized.astype(np.uint8)
 
-            depth_colormap = cv2.applyColorMap(depth_image_normalized, cv2.COLORMAP_JET)
-
-            cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_colormap)
+            cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
             cv2.waitKey(1)
 
         except CvBridgeError as e:
