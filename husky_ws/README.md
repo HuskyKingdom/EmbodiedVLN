@@ -93,7 +93,7 @@ Then install the ZED SDK and ZED ROS Wrappper, you need to install them with res
 ```
 xhost +si:localuser:root
 
-docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/embodiedvln_ros2:latest:latest bash
+docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/embodiedvln_ros2:latest bash
 ```
 
 
