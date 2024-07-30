@@ -240,5 +240,13 @@ cd logic_node
 docker build -f Dockerfile -t yhs/logicnode:latest .
 ```
 
+Enter the logic_node:
+
+```
+xhost +si:localuser:root
+
+docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/logicnode:latest bash
+```
+
 ### Seq-2-Seq
 
