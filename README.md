@@ -233,5 +233,12 @@ You should see `done` if everything works correctly.
 
 We examinate two baselines from VLN-CE paper, the seq-2-seq model, and the cross-attention model.
 
+In order to run the logical components, we need another docker environment, building it by the following instructions:
+
+```
+cd logic_node
+docker build -f Dockerfile -t yhs/logicnode:latest .
+```
+
 ### Seq-2-Seq
 
