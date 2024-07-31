@@ -1,12 +1,11 @@
 from setuptools import find_packages, setup
 
 package_name = 'logic_node'
-submodules = "mypackage/submodules"
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(exclude=['test']),
+    packages=find_packages(include=[package_name, package_name + '.*']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
