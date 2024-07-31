@@ -105,7 +105,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         time.sleep(1.0)
 
-        self.stop()
+        self.publish_thread.update(4) # 'stop' action
 
 
     def stop(self):
