@@ -56,13 +56,13 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         self.rgb_suber = self.create_subscription(
             Image,
-            '/zed2i/zed_node/left/image_rect_color',
+            '/zed/zed_node/left/image_rect_color',
             self.rgb_callback,
             10)
         
         self.depth_suber = self.create_subscription(
             Image,
-            '/zed2i/zed_node/depth/depth_registered',
+            '/zed/zed_node/depth/depth_registered',
             self.dep_callback,
             10)
         
@@ -379,6 +379,7 @@ class Husky_controllor:
 
 def main():
 
+    print("Embodied Middleware Started...")
     args = parse_arguments()
     settings = saveTerminalSettings()
 
@@ -388,3 +389,7 @@ def main():
     rclpy.spin(midware)
 
     cv2.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    main()
