@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'embodied_core = embodied_middleware.embodied_core:main'
         ],
     },
 )

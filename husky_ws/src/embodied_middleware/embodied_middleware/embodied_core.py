@@ -377,17 +377,14 @@ class Husky_controllor:
 
 
 
+def main():
 
-args = parse_arguments()
-settings = saveTerminalSettings()
+    args = parse_arguments()
+    settings = saveTerminalSettings()
 
-rclpy.init(args=None)
+    rclpy.init(args=None)
 
-# core components
-observation_handle = ObservationSubscriber() # zed img subscriber
-action_handle = ActionPulisher() # husky motion publisher
+    midware = MiddleWare() # middleware node
+    rclpy.spin(midware)
 
-rclpy.spin(minimal_subscriber)
-
-
-cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
