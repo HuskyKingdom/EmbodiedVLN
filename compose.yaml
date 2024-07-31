@@ -51,7 +51,7 @@ services:
       # "source=${localWorkspaceFolder}/../cache/humble/install,target=/home/ws/install,type=bind",
       # "source=${localWorkspaceFolder}/../cache/humble/log,target=/home/ws/log,type=bind"
       # Mount workspace
-      - ../..:/home/ros2-agv-essentials
+      - zed_ws:/home/ros2-agv-essentials
   # zed-isaac-sim:
   #   # The following configurations are based on the official Isaac Sim container installation guide.
   #   # Reference: https://docs.omniverse.nvidia.com/isaacsim/latest/installation/install_container.html
@@ -152,4 +152,4 @@ services:
       # Reference: https://answers.ros.org/question/365658
       - ./cache/.gazebo:/home/user/.gazebo
       # Mount workspace
-      - ../..:/home/ros2-agv-essentials
+      - husky_ws:/home/ros2-agv-essentials
