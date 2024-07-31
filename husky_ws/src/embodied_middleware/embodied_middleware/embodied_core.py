@@ -206,8 +206,8 @@ class PublishThread(threading.Thread):
             twist.linear.x = self.x * self.speed
             twist.linear.y = self.y * self.speed
             twist.linear.z = self.z * self.speed
-            twist.angular.x = 0
-            twist.angular.y = 0
+            twist.angular.x = 0.0
+            twist.angular.y = 0.0
             twist.angular.z = self.turn
 
             self.condition.release()
@@ -218,12 +218,12 @@ class PublishThread(threading.Thread):
     
 
         # Publish stop message when thread exits.
-        twist.linear.x = 0
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
-        twist.angular.z = 0
+        twist.linear.x = 0.0
+        twist.linear.y = 0.0
+        twist.linear.z = 0.0
+        twist.angular.x = 0.0
+        twist.angular.y = 0.0
+        twist.angular.z = 0.0
         self.publisher.publish(twist)
 
 
