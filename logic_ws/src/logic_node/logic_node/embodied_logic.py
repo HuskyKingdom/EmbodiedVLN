@@ -16,6 +16,12 @@ else:
 
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
+
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+custom_module_path = os.path.join(current_dir, 'utils')
+sys.path.append(custom_module_path)
+
 from utils.common import text_to_tensor
 
 # # ros1
