@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import threading
@@ -16,6 +16,7 @@ else:
 
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
+from utils.common import text_to_tensor
 
 # # ros1
 # from sensor_msgs.msg import PointCloud2, LaserScan,Image
@@ -33,6 +34,7 @@ from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
+from std_msgs.msg import Int8
 
 
 TwistMsg = Twist
@@ -66,19 +68,48 @@ class MiddleWare(Node): # sub to obs, pub to act.
             self.dep_callback,
             10)
         
+        self.rgb_suber = self.create_subscription(
+            Int8,
+            '/action_cmd',
+            self.action_callback,
+            10)
+        
         self.publish_thread = PublishThread(self, rate=10)
+
+        # obervation buffers
+
+        self.obs_buffer = {
+            "instruction": None, 
+            "depth": None,              
+            "rgb": None,              
+        }
+        
+        self.obs_buffer["instruction"] = input("Enter a new textual instruction here:")
+        self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"])
 
         self.cml_action()
 
 
+
+    def action(self,data):
+        self.send_command(data)
         
         
+    def clear_buffers(self):
+        self.obs_buffer = {
+            "instruction": None, 
+            "depth": None,              
+            "rgb": None,              
+        }
+
+        self.cur_inst = input("Enter a new textual instruction here:")
+        self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"])
+
 
 
     def rgb_callback(self,data):
         rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
-        cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
-        cv2.waitKey(1)
+        self.obs_buffer["rgb"] = rgb_image
         
       
     def dep_callback(self,data):
@@ -90,9 +121,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
         depth_image_normalized = depth_image_normalized.astype(np.uint8)
-
-        print("depth received.")
-
+        self.obs_buffer["depth"] = depth_image_normalized
 
         # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 
@@ -100,7 +129,6 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         # if action_index == 4: # stop action
         #     return
-        
         self.publish_thread.update(action_index)
 
         time.sleep(1.0)
@@ -326,6 +354,84 @@ def parse_arguments():
 
 
 
+
+from gym import spaces
+
+# logic 
+from policy.cma_policy import CMAPolicy
+from utils.common import batch_obs, tokenize_text_nltk
+import torch
+
+
+
+class CORE_FUNC():
+
+    def __init__(self):
+
+        # init
+        self.device = "cuda"
+
+        # middleware
+        self.middleware = MiddleWare()
+
+        self.observations = self.middleware.obs_buffer
+
+        # load policy
+        self.policy = CMAPolicy(spaces.Box(low=0, high=255, shape=(256, 256, 3)),spaces.Discrete(3))
+        self.policy.to("cuda")
+        ckpt_dict = torch.load("data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
+        self.policy.load_state_dict(ckpt_dict["state_dict"])
+        self.policy.eval()
+
+        input("Start Inference?")
+
+        self.inference()
+
+    
+
+    def inference(self):
+        
+        # network reset       
+        inf_action = -1
+
+        rnn_states = torch.zeros(
+            1,
+            self.policy.net.num_recurrent_layers,
+            512,
+            device=self.device,
+        )
+        prev_actions = torch.zeros(
+            1, 1, device=self.device, dtype=torch.long
+        )
+        not_done_masks = torch.zeros(
+            1, 1, dtype=torch.uint8, device=self.device
+        )
+
+        # model inference____
+
+        while inf_action != 4: # done is not called
+            
+            # get obs
+            self.observations = self.middleware.obs_buffer
+            batch = batch_obs(self.observations)
+            with torch.no_grad():
+                actions, rnn_states = self.policy.act(
+                    batch,
+                    rnn_states,
+                    prev_actions,
+                    not_done_masks,
+                    deterministic=False,
+                )
+                prev_actions.copy_(actions)
+                output = actions[0].item()
+                # send action
+                self.middleware.send_command(output)
+
+                print(f"Action {output} Performed...")
+
+
+
+
 def main():
 
     print("Embodied Middleware Started...")
@@ -333,11 +439,8 @@ def main():
     settings = saveTerminalSettings()
 
     rclpy.init(args=None)
-
-    midware = MiddleWare() # middleware node
-    rclpy.spin(midware)
-
-    cv2.destroyAllWindows()
+    core = CORE_FUNC()
+    rclpy.spin(core.middleware)
 
 
 if __name__ == '__main__':

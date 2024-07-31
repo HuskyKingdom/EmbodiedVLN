@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'embodied_middleware'
+package_name = 'logic_node'
 
 setup(
     name=package_name,
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'embodied_core = embodied_middleware.embodied_core:main'
+            'embodiedlogic = logic_node.embodied_logic:main',
         ],
     },
 )

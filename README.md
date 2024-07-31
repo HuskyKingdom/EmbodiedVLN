@@ -93,6 +93,21 @@ docker build -f Dockerfile -t yhs/ros2_zed:latest .
 ```
 
 
+Then install embodied logic workspace docker, which contains zed core nodes.
+
+```
+cd logic_ws/docker
+```
+
+On amd64 & arm64 machine, build the image by the following:
+
+```sh
+docker build -f Dockerfile -t yhs/ros2_logic:latest .
+```
+
+
+
+
 Brining up all containers:
 
 ```
@@ -103,7 +118,7 @@ docker-compose up -d
 Note: Remember to call `docker-compose down` after you finished using them.
 
 
-## ZED Docker
+## ZED Core Docker
 
 
 
@@ -125,7 +140,7 @@ ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
 
 
 
-## Embodied Core Docker
+## Husky Core Docker
 
 
 
@@ -148,38 +163,32 @@ source ~/.bashrc
 ```
 
 
+## Embodied Logic Core Docker
+
+
+Enther the docker container and build the workspace:
+
+```
+docker exec -it ros2_logic bash
+
+rosdep update
+rosdep install --from-paths src --ignore-src --rosdistro humble -y
+colcon build
+```
+
+
+Installing requirements:
+
+```
+python3 -m pip install -r requirements.txt
+```
+
+
+
 Then start up the embodied middleware nodes by:
 
 ```
 ros2 run embodied_middleware embodied_core
 ```
 
-
-
-## Getting Start with Baselines
-
-We examinate two baselines from VLN-CE paper, the seq-2-seq model, and the cross-attention model.
-
-In order to run the logical components, we need another docker environment, building it by the following instructions:
-
-```
-cd logic_node
-docker build -f Dockerfile -t yhs/logicnode:latest .
-```
-
-Enter the logic_node:
-
-```
-xhost +si:localuser:root
-
-docker run --gpus all -it --network host -v /dev:/dev -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --privileged yhs/logicnode:latest bash
-```
-
-Then install torch according to your cuda version, for cuda 12.4, run the following:
-
-```
-conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
-```
-
-### Seq-2-Seq
 
