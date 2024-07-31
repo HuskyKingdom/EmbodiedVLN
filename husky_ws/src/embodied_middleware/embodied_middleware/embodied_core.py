@@ -67,6 +67,9 @@ class MiddleWare(Node): # sub to obs, pub to act.
             10)
         
         self.publish_thread = PublishThread(self, rate=10)
+
+
+        self.cml_action()
         
 
 
@@ -78,14 +81,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
       
     def dep_callback(self,data):
 
-        pass
-
-        # try:
-
         depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
-        
-
-
         max_depth = 5.0
         depth_image = np.nan_to_num(depth_image)  
         depth_image[depth_image > max_depth] = max_depth  
@@ -95,11 +91,6 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         print("depth received.")
 
-        # cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
-        # cv2.waitKey(1)
-
-        # except CvBridgeError as e:
-        #     print(e)
 
         # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 
@@ -110,8 +101,21 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.publish_thread.update(action_index)
 
+
+        self.stop()
+
+
     def stop(self):
         self.publish_thread.stop()
+
+    
+    def cml_action(self):
+
+        end_flag = 0
+        while end_flag != -1:
+            action_index = input("Enter an action index to perform (-1 to exit):")
+            self.send_command(int(action_index))
+            end_flag = action_index
 
 class DistanceTracker(Node):
     def __init__(self):
@@ -180,7 +184,7 @@ class PublishThread(threading.Thread):
         self.y = moveBindings[action_index][1]
         self.z = moveBindings[action_index][2]
         self.th = moveBindings[action_index][3]
-        self.speed = 0.5
+        self.speed = 0.25
         self.turn = 1.0
         # Notify publish thread that we have a new message.
         self.condition.notify()
@@ -225,6 +229,8 @@ class PublishThread(threading.Thread):
         twist.angular.y = 0.0
         twist.angular.z = 0.0
         self.publisher.publish(twist)
+    
+
 
 
 
@@ -314,66 +320,6 @@ def parse_arguments():
 
 
 
-class Husky_controllor:
-
-
-    def __init__(self,args):
-
-        self.args = args
-
-
-        self.forward_speed = args.agent_speed
-
-        
-        signal.signal(signal.SIGINT, self.signal_handler)
-
-        # agent movement publisher
-        speed = rospy.get_param("~speed", args.agent_speed)
-        turn = rospy.get_param("~turn", 1.0)
-        speed_limit = rospy.get_param("~speed_limit", 1000)
-        turn_limit = rospy.get_param("~turn_limit", 1000)
-        repeat = rospy.get_param("~repeat_rate", 0.0)
-        key_timeout = rospy.get_param("~key_timeout", 0.5)
-        stamped = rospy.get_param("~stamped", False)
-        twist_frame = rospy.get_param("~frame_id", '')
-
-        if stamped:
-            TwistMsg = TwistStamped
-
-        self.pub_thread = PublishThread(repeat)
-        self.pub_thread.wait_for_subscribers()
-        self.pub_thread.update(4)
-
-        # self.distracker = DistanceTracker() 
-
-        # waiting for action command
-        self.cml_action()
-
-
-    def signal_handler(self,signal, frame):
-        print('You pressed Ctrl+C!')
-        self.pub_thread.stop()
-        restoreTerminalSettings(settings)
-        sys.exit(0)
-
-
-    def step_action(self,action_index): # 0-forward 1-backward 2-left15 3-right-15 4-stop
-
-        if action_index == -1 or action_index == 4: # invalid or stop action
-            return
-        # publish to robot
-        self.pub_thread.update(action_index)
-        rospy.sleep(1.0)
-
-    def cml_action(self):
-
-        end_flag = 0
-
-        while end_flag != -1:
-            action_index = input("Enter an action index to perform (-1 to exit):")
-            self.step_action(int(action_index))
-            end_flag = action_index
-        
 
 
 
