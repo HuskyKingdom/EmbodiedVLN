@@ -1,6 +1,7 @@
 from setuptools import find_packages, setup
 
 package_name = 'logic_node'
+submodules = "mypackage/submodules"
 
 setup(
     name=package_name,
@@ -24,3 +25,4 @@ setup(
         ],
     },
 )
+
