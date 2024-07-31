@@ -68,6 +68,8 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.publish_thread = PublishThread(self, rate=10)
 
+        self.cml_action()
+
 
         
         
