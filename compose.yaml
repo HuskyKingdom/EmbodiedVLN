@@ -3,7 +3,7 @@ services:
 
   zed-ws:
     build:
-      context: .
+      context: ./zed_ws/docker
       dockerfile: Dockerfile
     image: yhs/ros2_zed:latest
     container_name: ros2_zed
@@ -105,7 +105,7 @@ services:
 
   husky-ws:
     build:
-      context: .
+      context: ./husky_ws/docker
       dockerfile: Dockerfile
       # Specify the target platform to build the image.
       # Reference: https://docs.docker.com/compose/compose-file/build/#platforms
