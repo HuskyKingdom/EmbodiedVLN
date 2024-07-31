@@ -64,9 +64,9 @@ You should see `done` if everything works correctly.
 You need to reboot the host machine to make the udev rules take effect.
 
 
-## Embodied Core Docker
+## Building Docker Images
 
-First install embodied core docker, which contains husky controlling nodes and embodied core nodes.
+First you need to build embodied core docker, which contains husky controlling nodes and embodied middleware nodes.
 
 ```
 cd husky_ws/docker
@@ -78,39 +78,9 @@ On amd64 & arm64 machine, build the image by the following:
 docker build -f Dockerfile -t yhs/ros2_embodied_mid:latest .
 ```
 
-Then connect and power on the Husky.
-
-Open terminal and run the following to start a container from local image:
-
-```
-docker-compose up -d
-```
 
 
-Enther the docker container and build the workspace:
-
-```
-docker exec -it ros2_embodied_mid bash
-
-cd /home/ros2-agv-essentials/husky_ws
-rosdep update
-rosdep install --from-paths src --ignore-src --rosdistro humble -y
-colcon build
-```
-
-
-Start up the husky control nodes first:
-
-```
-source ~/.bashrc
-./script/husky-bringup.sh
-```
-
-
-## ZED Docker
-
-
-First install embodied core docker, which contains husky controlling nodes and embodied core nodes.
+Then install zed workspace docker, which contains zed core nodes.
 
 ```
 cd zed_ws/docker
@@ -119,14 +89,23 @@ cd zed_ws/docker
 On amd64 & arm64 machine, build the image by the following:
 
 ```sh
-docker build -f Dockerfile -t yhs/ros2_embodied_mid:latest .
+docker build -f Dockerfile -t yhs/ros2_zed:latest .
 ```
 
-Open terminal and run the following to start a container from local image:
+
+Brining up all containers:
 
 ```
+cd <project folder>
 docker-compose up -d
 ```
+
+Note: Remember to call `docker-compose down` after you finished using them.
+
+
+## ZED Docker
+
+
 
 Enther the docker container and build the workspace:
 
@@ -143,6 +122,38 @@ Starting ZED nodes by:
 ```
 ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
 ```
+
+
+
+## Embodied Core Docker
+
+
+
+Enther the docker container and build the workspace:
+
+```
+docker exec -it ros2_embodied_mid bash
+
+rosdep update
+rosdep install --from-paths src --ignore-src --rosdistro humble -y
+colcon build
+```
+
+
+Start up the husky control nodes first:
+
+```
+source ~/.bashrc
+./script/husky-bringup.sh
+```
+
+
+Then start up the embodied middleware nodes by:
+
+```
+ros2 run embodied_middleware embodied_core
+```
+
 
 
 ## Getting Start with Baselines
