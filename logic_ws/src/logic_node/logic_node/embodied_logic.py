@@ -16,7 +16,7 @@ else:
 
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
-from utils.common import text_to_tensor
+from logic_node.utils.common import text_to_tensor
 
 # # ros1
 # from sensor_msgs.msg import PointCloud2, LaserScan,Image
@@ -359,7 +359,7 @@ from gym import spaces
 
 # logic 
 from policy.cma_policy import CMAPolicy
-from utils.common import batch_obs, tokenize_text_nltk
+from logic_node.utils.common import batch_obs, tokenize_text_nltk
 import torch
 
 

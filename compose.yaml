@@ -157,7 +157,7 @@ services:
   ros2-logic:
     build: ./logic_ws/docker
     image: yhs/ros2-logic:latest
-    container_name: ros2-logic
+    container_name: ros2_logic
     stdin_open: true
     tty: true
     privileged: true
