@@ -69,7 +69,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         self.publish_thread = PublishThread(self, rate=10)
 
 
-        self.cml_action()
+        
         
 
 
@@ -101,6 +101,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.publish_thread.update(action_index)
 
+        time.sleep(1.0)
 
         self.stop()
 
@@ -148,7 +149,7 @@ class PublishThread(threading.Thread):
         super(PublishThread, self).__init__()
 
         self.node = node
-        self.publisher = node.create_publisher(Twist, 'cmd_vel', 10)
+        self.publisher = node.create_publisher(Twist, 'a200_0000/cmd_vel', 10)
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
