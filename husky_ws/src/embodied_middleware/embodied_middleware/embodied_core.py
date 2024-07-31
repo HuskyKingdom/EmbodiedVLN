@@ -98,8 +98,8 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
     def send_command(self, action_index):
 
-        if action_index == 4: # stop action
-            return
+        # if action_index == 4: # stop action
+        #     return
         
         self.publish_thread.update(action_index)
 
