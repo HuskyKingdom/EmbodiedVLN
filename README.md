@@ -75,7 +75,7 @@ cd husky_ws/docker
 On amd64 & arm64 machine, build the image by the following:
 
 ```sh
-docker build -f Dockerfile -t yhs/embodiedvln_ros2:latest .
+docker build -f Dockerfile -t yhs/ros2_embodied_mid:latest .
 ```
 
 Then connect and power on the Husky.
@@ -90,7 +90,7 @@ docker-compose up -d
 Enther the docker container and build the workspace:
 
 ```
-docker exec -it embodiedvln_ros2 bash
+docker exec -it ros2_embodied_mid bash
 
 cd /home/ros2-agv-essentials/husky_ws
 rosdep update
@@ -119,7 +119,7 @@ cd zed_ws/docker
 On amd64 & arm64 machine, build the image by the following:
 
 ```sh
-docker build -f Dockerfile -t yhs/embodiedvln_ros2:latest .
+docker build -f Dockerfile -t yhs/ros2_embodied_mid:latest .
 ```
 
 Open terminal and run the following to start a container from local image:

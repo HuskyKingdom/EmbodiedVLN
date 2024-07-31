@@ -8,8 +8,8 @@ services:
       # Reference: https://docs.docker.com/compose/compose-file/build/#platforms
       # platforms:
       #   - "linux/arm64"
-    image: yhs/embodiedvln_ros2:latest
-    container_name: embodiedvln_ros2
+    image: yhs/ros2_embodied_mid:latest
+    container_name: ros2_embodied_mid
     stdin_open: true
     tty: true
     privileged: true
