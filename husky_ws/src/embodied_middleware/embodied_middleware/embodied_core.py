@@ -17,21 +17,22 @@ else:
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-# ros1
-from sensor_msgs.msg import PointCloud2, LaserScan,Image
-from sensor_msgs import point_cloud2
-import roslib; roslib.load_manifest('teleop_twist_keyboard')
-import rospy
-from geometry_msgs.msg import Twist
-from geometry_msgs.msg import TwistStamped
-from rospy.numpy_msg import numpy_msg
-from nav_msgs.msg import Odometry
+# # ros1
+# from sensor_msgs.msg import PointCloud2, LaserScan,Image
+# from sensor_msgs import point_cloud2
+# import roslib; roslib.load_manifest('teleop_twist_keyboard')
+# import rospy
+
+# from rospy.numpy_msg import numpy_msg
 
 
 # ros2
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistStamped
+from nav_msgs.msg import Odometry
 
 
 TwistMsg = Twist
@@ -46,61 +47,82 @@ moveBindings = {
     }
 
 
-class observation_monitor:
+class MiddleWare(Node): # sub to obs, pub to act.
 
     def __init__(self):
-        rgb_suber = rospy.Subscriber('/zed2i/zed_node/right/image_rect_color', numpy_msg(Image), self.rgb_callback)
-        depth_suber = rospy.Subscriber('/zed2i/zed_node/depth/depth_registered', numpy_msg(Image), self.dep_callback)
+        
+        super().__init__('middleware_node')
         self.bridge = CvBridge()
+
+        self.rgb_suber = self.create_subscription(
+            Image,
+            '/zed2i/zed_node/left/image_rect_color',
+            self.rgb_callback,
+            10)
+        
+        self.depth_suber = self.create_subscription(
+            Image,
+            '/zed2i/zed_node/depth/depth_registered',
+            self.dep_callback,
+            10)
+        
+        self.publish_thread = PublishThread(self, rate=10)
+        
 
 
     def rgb_callback(self,data):
         rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
         cv2.imshow('SORA-VLN ZED2i Camera | RGB', rgb_image)
         cv2.waitKey(1)
-        print("rgb received.")
-
-        # ZeroMQ Context and Socket
-        byte_image = rgb_image.tobytes()
-        context = zmq.Context()
-        socket = context.socket(zmq.PUB)
-        socket.bind("tcp://*:5555")
-
-        socket.send(byte_image)
-
+        
+      
     def dep_callback(self,data):
 
         pass
 
         # try:
 
-        #     depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
-        #     print("shape {}".format(depth_image.shape))
+        depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
+        
 
 
-        #     max_depth = 5.0
-        #     depth_image = np.nan_to_num(depth_image)  
-        #     depth_image[depth_image > max_depth] = max_depth  
+        max_depth = 5.0
+        depth_image = np.nan_to_num(depth_image)  
+        depth_image[depth_image > max_depth] = max_depth  
 
-        #     depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
-        #     depth_image_normalized = depth_image_normalized.astype(np.uint8)
+        depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
+        depth_image_normalized = depth_image_normalized.astype(np.uint8)
 
+        print("depth received.")
 
-        #     cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
-        #     cv2.waitKey(1)
+        # cv2.imshow('SORA-VLN ZED2i Camera | Depth', depth_image_normalized)
+        # cv2.waitKey(1)
 
         # except CvBridgeError as e:
         #     print(e)
 
         # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 
+    def send_command(self, action_index):
 
+        if action_index == 4: # stop action
+            return
+        
+        self.publish_thread.update(action_index)
 
-class DistanceTracker:
+    def stop(self):
+        self.publish_thread.stop()
+
+class DistanceTracker(Node):
     def __init__(self):
         self.last_position = None
         self.total_distance = 0.0
-        rospy.Subscriber("/husky_velocity_controller/odom", Odometry, self.odom_callback)
+        self.rgb_suber = self.create_subscription(
+            Odometry,
+            '/husky_velocity_controller/odom',
+            self.odom_callback,
+            10)
+
 
     def odom_callback(self, msg):
         position = msg.pose.pose.position
@@ -114,10 +136,15 @@ class DistanceTracker:
 
 
 
+
+
+
 class PublishThread(threading.Thread):
-    def __init__(self, rate):
+    def __init__(self, node, rate):
         super(PublishThread, self).__init__()
-        self.publisher = rospy.Publisher('cmd_vel', TwistMsg, queue_size = 1)
+
+        self.node = node
+        self.publisher = node.create_publisher(Twist, 'cmd_vel', 10)
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
@@ -138,13 +165,13 @@ class PublishThread(threading.Thread):
 
     def wait_for_subscribers(self):
         i = 0
-        while not rospy.is_shutdown() and self.publisher.get_num_connections() == 0:
+        while self.publisher.get_subscription_count() == 0:
             if i == 4:
-                print("Waiting for subscriber to connect to {}".format(self.publisher.name))
-            rospy.sleep(0.5)
+                self.node.get_logger().info(f"Waiting for subscriber to connect to {self.publisher.topic_name}")
+            rclpy.spin_once(self.node, timeout_sec=0.5)
             i += 1
             i = i % 5
-        if rospy.is_shutdown():
+        if not rclpy.ok():
             raise Exception("Got shutdown request before subscribers connected")
 
     def update(self,action_index):
@@ -166,19 +193,11 @@ class PublishThread(threading.Thread):
 
     def run(self):
         
-        twist_msg = TwistMsg()
-        stamped = rospy.get_param("~stamped", False)
-        twist_frame = rospy.get_param("~frame_id", '')
+        twist = Twist()
 
-        if stamped:
-            twist = twist_msg.twist
-            twist_msg.header.stamp = rospy.Time.now()
-            twist_msg.header.frame_id = twist_frame
-        else:
-            twist = twist_msg
+
         while not self.done:
-            if stamped:
-                twist_msg.header.stamp = rospy.Time.now()
+            
             self.condition.acquire()
             # Wait for a new message or timeout.
             self.condition.wait(self.timeout)
@@ -194,7 +213,7 @@ class PublishThread(threading.Thread):
             self.condition.release()
 
             # Publish.
-            self.publisher.publish(twist_msg)
+            self.publisher.publish(twist)
 
     
 
@@ -205,7 +224,7 @@ class PublishThread(threading.Thread):
         twist.angular.x = 0
         twist.angular.y = 0
         twist.angular.z = 0
-        self.publisher.publish(twist_msg)
+        self.publisher.publish(twist)
 
 
 
@@ -294,21 +313,6 @@ def parse_arguments():
     return args
 
 
-def euclidean(point1, point2):
-    """
-    Calculate the Euclidean distance between two 3D points.
-
-    Parameters:
-    - point1: Tuple[float, float, float], the first point (x1, y1, z1).
-    - point2: Tuple[float, float, float], the second point (x2, y2, z2).
-
-    Returns:
-    - float, the Euclidean distance between the two points.
-    """
-    return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2 + (point1[2] - point2[2]) ** 2) ** 0.5
-
-
-
 
 class Husky_controllor:
 
@@ -377,13 +381,13 @@ class Husky_controllor:
 args = parse_arguments()
 settings = saveTerminalSettings()
 
-rospy.init_node('embodied_core')
+rclpy.init(args=None)
 
 # core components
-observation_handle = observation_monitor() # zed img subscriber
-husky_handle = Husky_controllor(args) # husky motion publisher
+observation_handle = ObservationSubscriber() # zed img subscriber
+action_handle = ActionPulisher() # husky motion publisher
 
-rospy.spin()
+rclpy.spin(minimal_subscriber)
 
 
 cv2.destroyAllWindows()

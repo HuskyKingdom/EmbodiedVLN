@@ -2,7 +2,7 @@
 <br />
 <div align="center" id="readme-top">
   
-  <h1 align="center">Husky Workspace <br> In ROS-2 Humble</h1>
+  <h1 align="center">Husky Workspace<br> In ROS-2 Humble</h1>
 
   <p align="center" >
 

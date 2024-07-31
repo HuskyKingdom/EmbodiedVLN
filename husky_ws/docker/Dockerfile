@@ -83,6 +83,7 @@ RUN apt-get update && apt-get install -y \
     ros-$ROS_DISTRO-slam-toolbox \
     ros-$ROS_DISTRO-imu-tools \
     ros-$ROS_DISTRO-teleop-twist-keyboard \
+    ros-$ROS_DISTRO-cv-bridge \
     && sudo rm -rf /var/lib/apt/lists/*
 
 COPY .bashrc /home/$USERNAME/.bashrc
@@ -110,7 +111,3 @@ RUN /home/$USERNAME/udev_rules/install_udev_rules.sh
 RUN bash -ie /home/$USERNAME/script/husky-generate.sh
 
 
-
-# zed 
-RUN sudo apt-get install zstd
-RUN sudo apt-get install usbutils
