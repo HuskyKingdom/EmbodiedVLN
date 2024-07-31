@@ -10,7 +10,7 @@ services:
     tty: true
     privileged: true
     command: /bin/bash
-    network_mode: host
+
     networks:
       - ros-network
     working_dir: /home/ros2-agv-essentials/zed_ws
@@ -44,7 +44,7 @@ services:
     tty: true
     privileged: true
     command: /bin/bash
-    network_mode: host
+
     networks:
       - ros-network
     working_dir: /home/ros2-agv-essentials/husky_ws
