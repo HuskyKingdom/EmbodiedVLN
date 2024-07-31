@@ -215,7 +215,7 @@ class PublishThread(threading.Thread):
             twist.linear.z = self.z * self.speed
             twist.angular.x = 0.0
             twist.angular.y = 0.0
-            twist.angular.z = self.turn
+            twist.angular.z = self.th * self.turn
 
             self.condition.release()
 
