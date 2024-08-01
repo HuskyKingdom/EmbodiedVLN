@@ -69,12 +69,6 @@ class MiddleWare(Node): # sub to obs, pub to act.
             self.dep_callback,
             10)
         
-        self.rgb_suber = self.create_subscription(
-            Int8,
-            '/action_cmd',
-            self.action_callback,
-            10)
-        
         self.publish_thread = PublishThread(self, rate=10)
 
         # obervation buffers
