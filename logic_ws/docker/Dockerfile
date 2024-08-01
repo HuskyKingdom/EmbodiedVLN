@@ -59,6 +59,8 @@ RUN locale-gen en_US en_US.UTF-8 \
 # Install pytorch dependencies
 # Reference : https://forums.developer.nvidia.com/t/unable-to-import-pytorch/154016
 RUN apt-get install -y libopenblas-base
+RUN sudo apt-get remove --purge openmpi*
+RUN sudo apt-get install libopenmpi-dev openmpi-bin
 
 COPY .bashrc /home/$USERNAME/.bashrc
 

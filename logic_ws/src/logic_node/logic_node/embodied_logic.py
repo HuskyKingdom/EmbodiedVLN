@@ -358,8 +358,8 @@ def parse_arguments():
 from gym import spaces
 
 # logic 
-from policy.cma_policy import CMAPolicy
-from logic_node.utils.common import batch_obs
+from .policy.cma_policy import CMAPolicy
+from .utils.common import batch_obs
 import torch
 
 
