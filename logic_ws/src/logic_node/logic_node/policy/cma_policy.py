@@ -1,5 +1,5 @@
-from policy.base_policy import BasePolicy
-from model.cma_net import CMANet
+from .base_policy import BasePolicy
+from ..model.cma_net import CMANet
 
 
 class CMAPolicy(BasePolicy):

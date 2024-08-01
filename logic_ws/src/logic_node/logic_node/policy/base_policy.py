@@ -1,5 +1,5 @@
 from typing import Any
-from utils.common import CategoricalNet,CustomFixedCategorical
+from ..utils.common import CategoricalNet,CustomFixedCategorical
 
 
 class BasePolicy():

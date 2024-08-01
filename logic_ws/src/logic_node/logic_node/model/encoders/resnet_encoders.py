@@ -6,10 +6,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
 from gym import Space, spaces
-from model.common import resnet
+from ..common import resnet
 from torch import Tensor
 
-from utils.common import single_frame_box_shape
+from ...utils.common import single_frame_box_shape
 
 
 class ResNetEncoder(nn.Module):

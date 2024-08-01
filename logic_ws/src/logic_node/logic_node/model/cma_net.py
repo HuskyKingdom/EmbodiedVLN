@@ -7,9 +7,9 @@ import numpy as np
 from typing import Dict, Optional, Tuple
 from gym import Space
 
-from model.encoders.instruction_encoder import InstructionEncoder
-from model.encoders import resnet_encoders 
-from model.encoders.rnn_state_encoder import build_rnn_state_encoder
+from .encoders.instruction_encoder import InstructionEncoder
+from .encoders import resnet_encoders 
+from .encoders.rnn_state_encoder import build_rnn_state_encoder
 
 class CMANet():
     """An implementation of the cross-modal attention (CMA) network in
