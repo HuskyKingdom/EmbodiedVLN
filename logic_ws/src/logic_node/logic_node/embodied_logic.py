@@ -17,12 +17,7 @@ else:
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-import os
-current_dir = os.path.dirname(os.path.abspath(__file__))
-custom_module_path = os.path.join(current_dir, 'utils')
-sys.path.append(custom_module_path)
-
-from utils.common import text_to_tensor
+from .utils.common import text_to_tensor
 
 # # ros1
 # from sensor_msgs.msg import PointCloud2, LaserScan,Image
@@ -93,7 +88,6 @@ class MiddleWare(Node): # sub to obs, pub to act.
         self.obs_buffer["instruction"] = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"])
 
-        self.cml_action()
 
 
 
