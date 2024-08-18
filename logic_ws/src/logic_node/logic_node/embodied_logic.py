@@ -92,12 +92,13 @@ class MiddleWare(Node): # sub to obs, pub to act.
             "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
             "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
         })
-        random_obs = self.obs_buffer.sample()
+        self.obs_buffer = self.obs_buffer.sample()
         
-        vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
-        vocab = load_vocab(vocab)
-        self.obs_buffer["instruction"] = input("Enter a new textual instruction here:")
-        self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"],vocab)
+        # tokenlize instruction
+        self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+        self.vocab = load_vocab(self.vocab)
+        inter_text = input("Enter a new textual instruction here:")
+        self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
         print(self.obs_buffer["instruction"].shape)
 
@@ -115,10 +116,10 @@ class MiddleWare(Node): # sub to obs, pub to act.
             "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
             "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
         })
-        random_obs = self.obs_buffer.sample()
+        self.obs_buffer = self.obs_buffer.sample()
 
-        self.cur_inst = input("Enter a new textual instruction here:")
-        self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"])
+        inter_text = input("Enter a new textual instruction here:")
+        self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
 
 
