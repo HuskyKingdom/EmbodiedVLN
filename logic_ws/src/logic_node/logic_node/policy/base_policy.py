@@ -7,6 +7,7 @@ class BasePolicy(nn.Module):
         """Defines an basic imitation learning policy as having functions act() and
         build_distribution().
         """
+        super().__init__()
         self.net = net
         self.dim_actions = dim_actions
 
