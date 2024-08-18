@@ -29,7 +29,7 @@ class CMANet():
         )(
             observation_space,
             output_size=128,
-            checkpoint="data/ddppo-models/gibson-2plus-resnet50.pth",
+            checkpoint="/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/ddppo-models/gibson-2plus-resnet50.pth",
             backbone="resnet50",
             trainable=False,
             spatial_output=True,
