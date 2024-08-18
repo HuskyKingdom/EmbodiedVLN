@@ -90,7 +90,6 @@ def batch_obs(observations: Dict[str, torch.Tensor], device: torch.device) -> Di
 
 
 
-
 def load_vocab(file_path: str) -> Dict[str, int]:
     with gzip.open(file_path, 'rt', encoding='utf-8') as f:
         data = json.load(f)
@@ -108,11 +107,42 @@ def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
     tokens = tokenize(text)
     return [vocab.get(token, vocab["<UNK>"]) for token in tokens]
 
-def text_to_tensor(text: str, vocab: Dict[str, int]) -> torch.Tensor:
-    """Converts a single text to a tensor of token indices."""
+def pad_or_truncate(indices: List[int], max_length: int, pad_index: int) -> List[int]:
+    """Pads or truncates the list of indices to the specified length."""
+    if len(indices) > max_length:
+        return indices[:max_length]
+    return indices + [pad_index] * (max_length - len(indices))
+
+def text_to_tensor(text: str, vocab: Dict[str, int], max_length: int = 200) -> torch.Tensor:
+    """Converts a single text to a tensor of token indices with padding/truncating."""
     indices = text_to_indices(text, vocab)
-    indices_tensor = torch.tensor(indices, dtype=torch.long)  # Add batch dimension
+    indices_padded = pad_or_truncate(indices, max_length, vocab['<PAD>'])
+    indices_tensor = torch.tensor(indices_padded, dtype=torch.long)
     return indices_tensor
+
+
+# def load_vocab(file_path: str) -> Dict[str, int]:
+#     with gzip.open(file_path, 'rt', encoding='utf-8') as f:
+#         data = json.load(f)
+#         vocab = data['instruction_vocab']['word2idx_dict']
+#         vocab['<UNK>'] = data['instruction_vocab']['UNK_INDEX']
+#         vocab['<PAD>'] = data['instruction_vocab']['PAD_INDEX']
+#     return vocab
+
+# def tokenize(text: str) -> List[str]:
+#     """Tokenizes input text into a list of words."""
+#     return text.lower().split()
+
+# def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
+#     """Converts text to a list of indices based on the vocabulary."""
+#     tokens = tokenize(text)
+#     return [vocab.get(token, vocab["<UNK>"]) for token in tokens]
+
+# def text_to_tensor(text: str, vocab: Dict[str, int]) -> torch.Tensor:
+#     """Converts a single text to a tensor of token indices."""
+#     indices = text_to_indices(text, vocab)
+#     indices_tensor = torch.tensor(indices, dtype=torch.long)  # Add batch dimension
+#     return indices_tensor
 
 
 # def tokenize(text: str) -> List[str]:
