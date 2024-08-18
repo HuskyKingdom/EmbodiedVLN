@@ -149,7 +149,7 @@ class CMANet(nn.Module):
         )
 
     def _init_layers(self) -> None:
-        if self.model_config.PROGRESS_MONITOR.use:
+        if False:
             nn.init.kaiming_normal_(
                 self.progress_monitor.weight, nonlinearity="tanh"
             )
