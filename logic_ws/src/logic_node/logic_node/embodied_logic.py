@@ -113,6 +113,12 @@ class MiddleWare(Node): # sub to obs, pub to act.
         inter_text = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
+    
+    def resample_random(self):
+
+        self.obs_buffer = generate_random_obs(self.obs_space)
+
+
 
 
     def rgb_callback(self,data):
@@ -444,6 +450,11 @@ class CORE_FUNC():
                 self.middleware.send_command(output)
 
                 print(f"Action {output} Performed...")
+
+                inf_action = output
+                self.middleware.resample_random()
+
+                
 
 
 
