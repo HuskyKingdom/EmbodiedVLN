@@ -12,9 +12,9 @@ class CMAPolicy(BasePolicy):
         super().__init__(
             CMANet(
                 observation_space=observation_space,
-                num_actions=action_space.n,
+                num_actions=action_space,
             ),
-            action_space.n,
+            action_space,
         )
 
     def passfunc(self):

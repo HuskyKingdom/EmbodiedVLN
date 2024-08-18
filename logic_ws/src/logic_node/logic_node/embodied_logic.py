@@ -369,13 +369,18 @@ class CORE_FUNC():
 
         # middleware
         self.middleware = MiddleWare()
-
         self.observations = self.middleware.obs_buffer
 
+        observation_space = spaces.Dict({
+        "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+        "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32)
+        })
+        action_space = 3
+
         # load policy
-        self.policy = CMAPolicy(spaces.Box(low=0, high=255, shape=(256, 256, 3)),spaces.Discrete(3))
+        self.policy = CMAPolicy(observation_space,action_space)
         self.policy.to("cuda")
-        ckpt_dict = torch.load("data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
+        ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
         self.policy.load_state_dict(ckpt_dict["state_dict"])
         self.policy.eval()
 
