@@ -17,7 +17,7 @@ else:
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-from .utils.common import text_to_tensor
+from .utils.common import text_to_tensor,load_vocab
 
 # # ros1
 # from sensor_msgs.msg import PointCloud2, LaserScan,Image
@@ -79,8 +79,10 @@ class MiddleWare(Node): # sub to obs, pub to act.
             "rgb": None,              
         }
         
+        vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+        vocab = load_vocab(vocab)
         self.obs_buffer["instruction"] = input("Enter a new textual instruction here:")
-        self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"])
+        self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"],vocab)
 
 
 

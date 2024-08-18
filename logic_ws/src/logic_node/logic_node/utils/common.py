@@ -100,8 +100,6 @@ def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
 
 def text_to_tensor(text: str, vocab: Dict[str, int]) -> torch.Tensor:
     """Converts a single text to a tensor of token indices."""
-    vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
-    vocab = load_vocab(vocab)
     indices = text_to_indices(text, vocab)
     indices_tensor = torch.tensor([indices], dtype=torch.long)  # Add batch dimension
     return indices_tensor
