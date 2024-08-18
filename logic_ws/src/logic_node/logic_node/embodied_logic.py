@@ -452,7 +452,9 @@ class CORE_FUNC():
                 print(f"Action {output} Performed...")
 
                 inf_action = output
-                self.middleware.resample_random()
+
+
+                self.middleware.resample_random() # rm, testing only
 
                 
 
