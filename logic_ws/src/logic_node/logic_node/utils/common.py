@@ -86,7 +86,9 @@ def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
     return [vocab.get(token, vocab["<UNK>"]) for token in tokens]
 
 def text_to_tensor(text: str) -> torch.Tensor:
-    vocab_file_path = "./data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+    vocab_file_path = "/data/datasets/R2R_VLNCE_v1-3_preprocessed/train.json.gz"
+    import os
+    print(os.getcwd())
     with gzip.open(vocab_file_path, 'rt', encoding='utf-8') as f:
         vocab = json.load(f)
         
