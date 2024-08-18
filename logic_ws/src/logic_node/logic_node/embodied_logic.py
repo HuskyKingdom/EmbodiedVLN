@@ -391,7 +391,7 @@ class CORE_FUNC():
         "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
         "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32)
         })
-        action_space = 3
+        action_space = 4
 
         # load policy
         self.policy = CMAPolicy(observation_space,action_space)

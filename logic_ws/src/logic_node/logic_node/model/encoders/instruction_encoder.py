@@ -25,7 +25,7 @@ class InstructionEncoder(nn.Module):
         self.encoder_rnn = rnn(
             input_size=50,
             hidden_size=128,
-            bidirectional=False,
+            bidirectional=True,
         )
         use_pretrained_embeddings = True
         sensor_uuid = "instruction"
@@ -44,7 +44,7 @@ class InstructionEncoder(nn.Module):
 
     @property
     def output_size(self):
-        return 128 * (1 + int(False))
+        return 128 * (1 + int(True))
 
     def _load_embeddings(self) -> Tensor:
         """Loads word embeddings from a pretrained embeddings file.
