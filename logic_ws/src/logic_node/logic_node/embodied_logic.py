@@ -51,7 +51,7 @@ from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Int8
-
+import gym
 
 TwistMsg = Twist
 
@@ -87,17 +87,19 @@ class MiddleWare(Node): # sub to obs, pub to act.
         self.publish_thread = PublishThread(self, rate=10)
 
         # obervation buffers
-
-        self.obs_buffer = {
-            "instruction": None, 
-            "depth": None,              
-            "rgb": None,              
-        }
+        self.obs_buffer = gym.spaces.Dict({
+            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
+            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
+        })
+        random_obs = self.obs_buffer.sample()
         
         vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
         vocab = load_vocab(vocab)
         self.obs_buffer["instruction"] = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"],vocab)
+
+        print(self.obs_buffer["instruction"].shape)
 
 
 
@@ -107,11 +109,13 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         
     def clear_buffers(self):
-        self.obs_buffer = {
-            "instruction": None, 
-            "depth": None,              
-            "rgb": None,              
-        }
+
+        self.obs_buffer = gym.spaces.Dict({
+            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
+            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
+        })
+        random_obs = self.obs_buffer.sample()
 
         self.cur_inst = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(self.obs_buffer["instruction"])
@@ -387,14 +391,10 @@ class CORE_FUNC():
         self.middleware = MiddleWare()
         self.observations = self.middleware.obs_buffer
 
-        observation_space = spaces.Dict({
-        "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
-        "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32)
-        })
         action_space = 4
 
         # load policy
-        self.policy = CMAPolicy(observation_space,action_space)
+        self.policy = CMAPolicy(self.obs_buffer,action_space)
         self.policy.to("cuda")
         ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
         self.policy.load_state_dict(ckpt_dict["state_dict"])
