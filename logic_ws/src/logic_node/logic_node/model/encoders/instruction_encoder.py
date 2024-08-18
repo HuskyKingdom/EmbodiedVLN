@@ -54,7 +54,7 @@ class InstructionEncoder(nn.Module):
         Returns:
             embeddings tensor of size [num_words x embedding_dim]
         """
-        embedding_file = "data/datasets/R2R_VLNCE_v1-3_preprocessed/embeddings.json.gz"
+        embedding_file = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/embeddings.json.gz"
         with gzip.open(embedding_file, "rt") as f:
             embeddings = torch.tensor(json.load(f))
         return embeddings
