@@ -29,6 +29,7 @@ class MockHabitat:
 
 sys.modules['habitat'] = MockHabitat()
 sys.modules['habitat.config'] = MockHabitat()
+sys.modules['habitat.config.defult'] = MockHabitat()
 
 
 # # ros1
