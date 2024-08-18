@@ -207,6 +207,7 @@ class CMANet(nn.Module):
         )
 
         text_state_q = self.state_q(state)
+        print(f"instruction embedding shape {instruction_embedding.shape}")
         text_state_k = self.text_k(instruction_embedding)
         text_mask = (instruction_embedding == 0.0).all(dim=1)
         text_embedding = self._attn(
