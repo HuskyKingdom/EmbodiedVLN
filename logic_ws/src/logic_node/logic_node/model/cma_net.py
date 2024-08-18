@@ -11,7 +11,7 @@ from .encoders.instruction_encoder import InstructionEncoder
 from .encoders import resnet_encoders 
 from .encoders.rnn_state_encoder import build_rnn_state_encoder
 
-class CMANet():
+class CMANet(nn.Module):
     """An implementation of the cross-modal attention (CMA) network in
     https://arxiv.org/abs/2004.02857
     """
