@@ -185,12 +185,12 @@ class CMANet(nn.Module):
             ((prev_actions.float() + 1) * masks).long().view(-1)
         )
 
-        if self.model_config.ablate_instruction:
-            instruction_embedding = instruction_embedding * 0
-        if self.model_config.ablate_depth:
-            depth_embedding = depth_embedding * 0
-        if self.model_config.ablate_rgb:
-            rgb_embedding = rgb_embedding * 0
+        # if self.model_config.ablate_instruction:
+        #     instruction_embedding = instruction_embedding * 0
+        # if self.model_config.ablate_depth:
+        #     depth_embedding = depth_embedding * 0
+        # if self.model_config.ablate_rgb:
+        #     rgb_embedding = rgb_embedding * 0
 
         rgb_in = self.rgb_linear(rgb_embedding)
         depth_in = self.depth_linear(depth_embedding)
