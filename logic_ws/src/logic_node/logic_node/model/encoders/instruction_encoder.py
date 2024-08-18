@@ -93,7 +93,7 @@ class InstructionEncoder(nn.Module):
         rnn_type = "LSTM"
         if rnn_type == "LSTM":
             final_state = final_state[0]
-        final_state_only = True
+        final_state_only = False
         if final_state_only:
             return final_state.squeeze(0)
         else:
