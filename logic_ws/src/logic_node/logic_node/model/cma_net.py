@@ -20,6 +20,7 @@ class CMANet(nn.Module):
         self, observation_space: Space, num_actions: int
     ) -> None:
 
+        super().__init__()
         # Init the instruction encoder
         self.instruction_encoder = InstructionEncoder()
 
