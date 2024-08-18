@@ -394,8 +394,14 @@ class CORE_FUNC():
 
         action_space = 4
 
+        obs_space = gym.spaces.Dict({
+            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
+            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
+        })
+
         # load policy
-        self.policy = CMAPolicy(self.obs_buffer,action_space)
+        self.policy = CMAPolicy(obs_space,action_space)
         self.policy.to("cuda")
         ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
         self.policy.load_state_dict(ckpt_dict["state_dict"])
