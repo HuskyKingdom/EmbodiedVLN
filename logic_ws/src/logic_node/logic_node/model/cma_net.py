@@ -1,5 +1,5 @@
 from torch import Size, Tensor
-from torch import nn as nn
+from torch import nn
 import torch.nn.functional as F
 import torch
 import numpy as np

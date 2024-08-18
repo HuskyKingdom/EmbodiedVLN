@@ -1,6 +1,6 @@
 from typing import Any
 from ..utils.common import CategoricalNet,CustomFixedCategorical
-
+from torch import nn
 
 class BasePolicy(nn.Module):
     def __init__(self, net, dim_actions):
