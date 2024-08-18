@@ -28,6 +28,7 @@ class MockHabitat:
         return None
 
 sys.modules['habitat'] = MockHabitat()
+sys.modules['habitat.config'] = MockHabitat()
 
 
 # # ros1
