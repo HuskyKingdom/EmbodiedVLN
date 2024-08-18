@@ -31,8 +31,6 @@ sys.modules['habitat'] = MockHabitat()
 sys.modules['habitat.config'] = MockHabitat()
 sys.modules['habitat.config.default.Config'] = MockHabitat()
 
-from habitat.config.default import Config
-torch.serialization.add_safe_globals([Config])
 
 
 # # ros1
@@ -397,7 +395,7 @@ class CORE_FUNC():
         # load policy
         self.policy = CMAPolicy(observation_space,action_space)
         self.policy.to("cuda")
-        ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu",weights_only=True)
+        ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
         self.policy.load_state_dict(ckpt_dict["state_dict"])
         self.policy.eval()
 
