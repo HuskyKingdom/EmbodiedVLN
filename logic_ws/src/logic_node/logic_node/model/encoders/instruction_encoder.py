@@ -88,6 +88,7 @@ class InstructionEncoder(nn.Module):
         output, final_state = self.encoder_rnn(packed_seq)
 
         print(f"final_state {final_state[0].shape}")
+        print(f"final_state {final_state[1].shape}")
 
         rnn_type = "LSTM"
         if rnn_type == "LSTM":
