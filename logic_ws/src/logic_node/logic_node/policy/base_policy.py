@@ -2,7 +2,7 @@ from typing import Any
 from ..utils.common import CategoricalNet,CustomFixedCategorical
 
 
-class BasePolicy():
+class BasePolicy(nn.Module):
     def __init__(self, net, dim_actions):
         """Defines an basic imitation learning policy as having functions act() and
         build_distribution().
