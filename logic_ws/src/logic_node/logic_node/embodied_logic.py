@@ -431,7 +431,7 @@ class CORE_FUNC():
 
         # model inference____
 
-        while inf_action != 4: # done is not called
+        while inf_action != 3: # done is not called
             
             # get obs
             self.observations = self.middleware.obs_buffer
@@ -444,12 +444,19 @@ class CORE_FUNC():
                     not_done_masks,
                     deterministic=False,
                 )
+
+                print(f"Logits {self.policy.get_distributions( batch,
+                    rnn_states,
+                    prev_actions,
+                    not_done_masks,
+                    deterministic=False,)} | Action {actions[0].item()} Performed...")
+                
                 prev_actions.copy_(actions)
                 output = actions[0].item()
                 # send action
                 self.middleware.send_command(output)
 
-                print(f"Action {output} Performed...")
+                
 
                 inf_action = output
 

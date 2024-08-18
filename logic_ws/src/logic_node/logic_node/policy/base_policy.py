@@ -37,6 +37,16 @@ class BasePolicy(nn.Module):
             action = distribution.sample()
 
         return action, rnn_states
+    
+    def get_distributions(self,observations,rnn_states,prev_actions,masks):
+
+        features, rnn_states = self.net(
+            observations, rnn_states, prev_actions, masks
+        )
+        distribution = self.action_distribution(features)
+
+        return distribution
+
 
     def get_value(self, *args: Any, **kwargs: Any):
         raise NotImplementedError
