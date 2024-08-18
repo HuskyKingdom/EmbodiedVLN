@@ -20,17 +20,17 @@ from cv_bridge import CvBridge, CvBridgeError
 from .utils.common import text_to_tensor,load_vocab
 
 
-import sys
-import types
+# import sys
+# import types
 
-class MockHabitat:
-    def __getattr__(self, name):
-        return None
+# class MockHabitat:
+#     def __getattr__(self, name):
+#         return None
 
-sys.modules['habitat'] = MockHabitat()
-sys.modules['habitat.config'] = MockHabitat()
-sys.modules['habitat.config.default'] = MockHabitat()
-sys.modules['habitat.config.default.Config'] = MockHabitat()
+# sys.modules['habitat'] = MockHabitat()
+# sys.modules['habitat.config'] = MockHabitat()
+# sys.modules['habitat.config.default'] = MockHabitat()
+# sys.modules['habitat.config.default.Config'] = MockHabitat()
 
 
 
