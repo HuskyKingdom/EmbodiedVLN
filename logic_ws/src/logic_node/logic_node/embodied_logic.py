@@ -445,7 +445,7 @@ class CORE_FUNC():
                     deterministic=False,
                 )
 
-                print(f"Logits {self.policy.get_distributions(batch,rnn_states,prev_actions,not_done_masks,deterministic=False)} | Action {actions[0].item()} Performed...")
+                print(f"Logits {self.policy.get_distributions(batch,rnn_states,prev_actions,not_done_masks)} | Action {actions[0].item()} Performed...")
                 
                 prev_actions.copy_(actions)
                 output = actions[0].item()
