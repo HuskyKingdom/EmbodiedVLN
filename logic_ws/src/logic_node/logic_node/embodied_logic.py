@@ -100,9 +100,6 @@ class MiddleWare(Node): # sub to obs, pub to act.
         inter_text = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
-        print(self.obs_buffer["instruction"].shape)
-
-
 
 
     def action(self,data):
@@ -110,7 +107,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         
     def clear_buffers(self):
-        
+
         self.obs_buffer = generate_random_obs(self.obs_space)
 
         inter_text = input("Enter a new textual instruction here:")

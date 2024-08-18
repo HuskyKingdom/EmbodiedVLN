@@ -66,10 +66,14 @@ class InstructionEncoder(nn.Module):
             lengths: [batch_size]
             hidden_state: [batch_size x hidden_size]
         """
+
+        
         if True:
             instruction = observations["instruction"].long()
+            print(f"first {instruction.shape}")
             lengths = (instruction != 0.0).long().sum(dim=1)
             instruction = self.embedding_layer(instruction)
+            print(f"first {instruction.shape}")
         else:
             instruction = observations["rxr_instruction"]
 
