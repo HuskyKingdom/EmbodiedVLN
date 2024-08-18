@@ -188,7 +188,7 @@ python3 -m pip install -r requirements.txt
 Then start up the embodied middleware nodes by:
 
 ```
-ros2 run embodied_middleware embodied_core
+ros2 run logic_node embodied_core
 ```
 
 

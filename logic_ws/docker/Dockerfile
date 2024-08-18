@@ -62,6 +62,8 @@ RUN apt-get install -y libopenblas-base
 RUN sudo apt-get remove --purge openmpi*
 RUN sudo apt-get install libopenmpi-dev openmpi-bin
 
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
 COPY .bashrc /home/$USERNAME/.bashrc
 
 # [Optional] Set the default user. Omit if you want to keep the default as root.
