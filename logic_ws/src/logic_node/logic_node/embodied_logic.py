@@ -31,6 +31,9 @@ sys.modules['habitat'] = MockHabitat()
 sys.modules['habitat.config'] = MockHabitat()
 sys.modules['habitat.config.default.Config'] = MockHabitat()
 
+from habitat.config.default import Config
+torch.serialization.add_safe_globals([Config])
+
 
 # # ros1
 # from sensor_msgs.msg import PointCloud2, LaserScan,Image
