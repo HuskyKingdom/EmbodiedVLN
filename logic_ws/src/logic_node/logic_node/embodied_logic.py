@@ -20,16 +20,16 @@ from cv_bridge import CvBridge, CvBridgeError
 from .utils.common import text_to_tensor,load_vocab
 
 
-import sys
-import types
+# import sys
+# import types
 
-class MockHabitat:
-    def __getattr__(self, name):
-        return None
+# class MockHabitat:
+#     def __getattr__(self, name):
+#         return None
 
-sys.modules['habitat'] = MockHabitat()
-sys.modules['habitat.config'] = MockHabitat()
-sys.modules['habitat.config.default'] = MockHabitat()
+# sys.modules['habitat'] = MockHabitat()
+# sys.modules['habitat.config'] = MockHabitat()
+# sys.modules['habitat.config.default'] = MockHabitat()
 
 
 # # ros1
@@ -394,7 +394,7 @@ class CORE_FUNC():
         # load policy
         self.policy = CMAPolicy(observation_space,action_space)
         self.policy.to("cuda")
-        ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
+        ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu",weights_only=True)
         self.policy.load_state_dict(ckpt_dict["state_dict"])
         self.policy.eval()
 
