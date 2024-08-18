@@ -4,6 +4,7 @@ import torch
 from gym import spaces
 import gzip
 import json
+import numpy as np
 
 from typing import (
     TYPE_CHECKING,
@@ -68,6 +69,15 @@ def single_frame_box_shape(box: spaces.Box) -> spaces.Box:
     )
 
 
+
+def generate_random_obs(space):
+    random_obs = {}
+    for key, box in space.spaces.items():
+        if box.dtype == np.uint8:
+            random_obs[key] = torch.randint(low=0, high=256, size=box.shape, dtype=torch.uint8)
+        elif box.dtype == np.float32:
+            random_obs[key] = torch.rand(size=box.shape, dtype=torch.float32)
+    return random_obs
 
 def batch_obs(observations: Dict[str, torch.Tensor], device: torch.device) -> Dict[str, torch.Tensor]:
     batched_obs = {}

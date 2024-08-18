@@ -17,7 +17,7 @@ else:
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-from .utils.common import text_to_tensor,load_vocab
+from .utils.common import text_to_tensor,load_vocab,generate_random_obs
 
 
 # import sys
@@ -87,12 +87,12 @@ class MiddleWare(Node): # sub to obs, pub to act.
         self.publish_thread = PublishThread(self, rate=10)
 
         # obervation buffers
-        self.obs_buffer = gym.spaces.Dict({
+        self.obs_space = gym.spaces.Dict({
             "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
             "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
             "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
         })
-        self.obs_buffer = self.obs_buffer.sample()
+        self.obs_buffer = generate_random_obs(self.obs_space)
         
         # tokenlize instruction
         self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
@@ -110,13 +110,8 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         
     def clear_buffers(self):
-
-        self.obs_buffer = gym.spaces.Dict({
-            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
-            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
-            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
-        })
-        self.obs_buffer = self.obs_buffer.sample()
+        
+        self.obs_buffer = generate_random_obs(self.obs_space)
 
         inter_text = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
