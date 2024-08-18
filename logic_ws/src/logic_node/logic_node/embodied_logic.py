@@ -430,7 +430,7 @@ class CORE_FUNC():
             
             # get obs
             self.observations = self.middleware.obs_buffer
-            batch = batch_obs(self.observations)
+            batch = batch_obs(self.observations,"cuda")
             with torch.no_grad():
                 actions, rnn_states = self.policy.act(
                     batch,
