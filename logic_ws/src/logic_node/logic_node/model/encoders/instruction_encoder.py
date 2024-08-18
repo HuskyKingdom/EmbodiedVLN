@@ -70,10 +70,8 @@ class InstructionEncoder(nn.Module):
         
         if True:
             instruction = observations["instruction"].long()
-            print(f"first {instruction.shape}")
             lengths = (instruction != 0.0).long().sum(dim=1)
             instruction = self.embedding_layer(instruction)
-            print(f"first {instruction.shape}")
         else:
             instruction = observations["rxr_instruction"]
 
@@ -86,9 +84,6 @@ class InstructionEncoder(nn.Module):
         )
 
         output, final_state = self.encoder_rnn(packed_seq)
-
-        print(f"final_state {final_state[0].shape}")
-        print(f"final_state {final_state[1].shape}")
 
         rnn_type = "LSTM"
         if rnn_type == "LSTM":
