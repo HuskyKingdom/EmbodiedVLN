@@ -78,24 +78,53 @@ def batch_obs(observations: Dict[str, torch.Tensor], device: torch.device) -> Di
 
 
 
+
+
+
+def load_vocab(file_path: str) -> Dict[str, int]:
+    with gzip.open(file_path, 'rt', encoding='utf-8') as f:
+        data = json.load(f)
+        vocab = data['instruction_vocab']['word2idx_dict']
+        vocab['<UNK>'] = data['instruction_vocab']['UNK_INDEX']
+        vocab['<PAD>'] = data['instruction_vocab']['PAD_INDEX']
+    return vocab
+
 def tokenize(text: str) -> List[str]:
+    """Tokenizes input text into a list of words."""
     return text.lower().split()
 
 def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
+    """Converts text to a list of indices based on the vocabulary."""
     tokens = tokenize(text)
     return [vocab.get(token, vocab["<UNK>"]) for token in tokens]
 
-def text_to_tensor(text: str) -> torch.Tensor:
-    vocab_file_path = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
-    import os
-    print(os.getcwd())
-    with gzip.open(vocab_file_path, 'rt', encoding='utf-8') as f:
-        vocab = json.load(f)
-        
-    # Convert text to indices
+def text_to_tensor(text: str, vocab: Dict[str, int]) -> torch.Tensor:
+    """Converts a single text to a tensor of token indices."""
+    vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+    vocab = load_vocab(vocab)
     indices = text_to_indices(text, vocab)
-    
-    # Since there's only one text, we don't need to pad to a max_length
     indices_tensor = torch.tensor([indices], dtype=torch.long)  # Add batch dimension
-    
     return indices_tensor
+
+
+# def tokenize(text: str) -> List[str]:
+#     return text.lower().split()
+
+# def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
+#     tokens = tokenize(text)
+#     return [vocab.get(token, vocab["<UNK>"]) for token in tokens]
+
+# def text_to_tensor(text: str) -> torch.Tensor:
+#     vocab_file_path = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+#     import os
+#     print(os.getcwd())
+#     with gzip.open(vocab_file_path, 'rt', encoding='utf-8') as f:
+#         vocab = json.load(f)
+        
+#     # Convert text to indices
+#     indices = text_to_indices(text, vocab)
+    
+#     # Since there's only one text, we don't need to pad to a max_length
+#     indices_tensor = torch.tensor([indices], dtype=torch.long)  # Add batch dimension
+    
+#     return indices_tensor
