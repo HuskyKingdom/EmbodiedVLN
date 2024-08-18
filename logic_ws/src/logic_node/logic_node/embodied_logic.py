@@ -19,6 +19,17 @@ from cv_bridge import CvBridge, CvBridgeError
 
 from .utils.common import text_to_tensor,load_vocab
 
+
+import sys
+import types
+
+class MockHabitat:
+    def __getattr__(self, name):
+        return None
+
+sys.modules['habitat'] = MockHabitat()
+
+
 # # ros1
 # from sensor_msgs.msg import PointCloud2, LaserScan,Image
 # from sensor_msgs import point_cloud2
@@ -357,6 +368,7 @@ from gym import spaces
 from .policy.cma_policy import CMAPolicy
 from .utils.common import batch_obs
 import torch
+
 
 
 
