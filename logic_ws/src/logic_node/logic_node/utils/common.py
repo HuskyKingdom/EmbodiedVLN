@@ -111,7 +111,7 @@ def text_to_indices(text: str, vocab: Dict[str, int]) -> List[int]:
 def text_to_tensor(text: str, vocab: Dict[str, int]) -> torch.Tensor:
     """Converts a single text to a tensor of token indices."""
     indices = text_to_indices(text, vocab)
-    indices_tensor = torch.tensor([indices], dtype=torch.long)  # Add batch dimension
+    indices_tensor = torch.tensor(indices, dtype=torch.long)  # Add batch dimension
     return indices_tensor
 
 
