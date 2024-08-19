@@ -162,7 +162,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
         depth_image_normalized = depth_image_normalized.astype(np.uint8)
-        depth_tensor = torch.from_numpy(depth_image_normalized)
+        depth_tensor = torch.from_numpy(depth_image_normalized).float()
         depth_tensor = depth_tensor.unsqueeze(-1)
         self.obs_buffer["depth"] = depth_tensor
 
