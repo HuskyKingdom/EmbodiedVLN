@@ -192,3 +192,8 @@ ros2 run logic_node embodied_core
 ```
 
 
+## To Stop All Containers
+
+```
+docker stop $(docker ps -q) && docker rm $(docker ps -a -q
+```

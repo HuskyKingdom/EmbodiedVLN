@@ -55,15 +55,22 @@ import gym
 
 TwistMsg = Twist
 
+# [STOP, MOVE_FORWARD, TURN_LEFT, TURN_RIGHT]
+
+# moveBindings = {
+#         0:(1,0,0,0),
+#         1:(0,0,0,1),
+#         2:(0,0,0,-1),
+#         3:(-1,0,0,0),
+#         4:(0,0,0,0),
+#     }
 
 moveBindings = {
-        0:(1,0,0,0),
-        1:(0,0,0,1),
-        2:(0,0,0,-1),
-        3:(-1,0,0,0),
-        4:(0,0,0,0),
+        0:(0,0,0,0),
+        1:(1,0,0,0),
+        2:(0,0,0,1),
+        3:(0,0,0,-1),
     }
-
 
 class MiddleWare(Node): # sub to obs, pub to act.
 
@@ -229,8 +236,8 @@ class PublishThread(threading.Thread):
         self.y = moveBindings[action_index][1]
         self.z = moveBindings[action_index][2]
         self.th = moveBindings[action_index][3]
-        self.speed = 0.25
-        self.turn = 1.0
+        self.speed = 0.25 # 0.25 m/s
+        self.turn = 0.26 # 15 deg/s
         # Notify publish thread that we have a new message.
         self.condition.notify()
         self.condition.release()
