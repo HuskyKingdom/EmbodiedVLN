@@ -93,6 +93,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.publish_thread = PublishThread(self, rate=10)
 
+        rclpy.spin()
         self.cml_action()
 
         # obervation buffers
@@ -109,6 +110,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         inter_text = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
+        
 
 
     def action(self,data):
@@ -480,8 +482,8 @@ def main():
     settings = saveTerminalSettings()
 
     rclpy.init(args=None)
-    core = CORE_FUNC()
-    rclpy.spin(core.middleware)
+    CORE_FUNC()
+    
 
 
 if __name__ == '__main__':
