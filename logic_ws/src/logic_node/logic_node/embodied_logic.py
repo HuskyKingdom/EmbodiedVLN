@@ -93,8 +93,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.publish_thread = PublishThread(self, rate=10)
 
-        rclpy.spin(self)
-        self.cml_action()
+        self.start_cml()
 
         # obervation buffers
         self.obs_space = gym.spaces.Dict({
@@ -164,7 +163,10 @@ class MiddleWare(Node): # sub to obs, pub to act.
     def stop(self):
         self.publish_thread.stop()
 
-    
+    def start_cml(self):
+        inference_thread = threading.Thread(target=self.cml_action)
+        inference_thread.start()
+        
     def cml_action(self):
 
         end_flag = 0
@@ -482,7 +484,9 @@ def main():
     settings = saveTerminalSettings()
 
     rclpy.init(args=None)
-    CORE_FUNC()
+    core = CORE_FUNC()
+
+    rclpy.spin(core.middleware)
     
 
 
