@@ -149,8 +149,8 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.obs_buffer["rgb"] = rgb_tensor
 
-        print(f"Showing img with {data.height} / {data.width}")
-        print(f"Showing img with {rgb_tensor.shape}")
+        # print(f"Showing img with {data.height} / {data.width}")
+        # print(f"Showing img with {rgb_tensor.shape}")
 
         
 
@@ -173,7 +173,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         depth_tensor = depth_tensor.unsqueeze(-1)
         self.obs_buffer["depth"] = depth_tensor
 
-        print(f"Depth shape {depth_tensor.shape}")
+        # print(f"Depth shape {depth_tensor.shape}")
 
         # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 
@@ -433,7 +433,7 @@ class CORE_FUNC():
         )
 
         # waiting for sensoring
-        while self.middleware.obs_buffer["rgb"] == None:
+        while self.middleware.obs_buffer["rgb"] == None or self.middleware.obs_buffer["depth"] == None:
             print("Waiting for sensoring...")
 
         # model inference____
