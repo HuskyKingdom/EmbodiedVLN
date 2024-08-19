@@ -133,12 +133,14 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
     def rgb_callback(self,data):
 
-        rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.width,data.height, -1)
+        rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height,data.width, -1)
         
+        if rgb_image.shape[2] == 4: # rm alpha channal
+            rgb_image = rgb_image[:, :, :3] 
+
         if self.args.vir:
             cv2.imshow('EmvoidedVLN ZED2i Camera', rgb_image)
             cv2.waitKey(1)
-            print("showinging...")
 
         rgb_tensor = torch.from_numpy(rgb_image)
         

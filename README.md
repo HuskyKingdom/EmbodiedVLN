@@ -193,6 +193,14 @@ ros2 run logic_node embodied_core
 ```
 
 
+To virsulize the observation:
+
+```
+export DISPLAY=:0
+ros2 run logic_node embodied_core --vir 1
+```
+
+
 ## To Stop All Containers
 
 ```
