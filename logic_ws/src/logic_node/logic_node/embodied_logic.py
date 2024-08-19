@@ -118,7 +118,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
     def clear_buffers(self):
 
-        self.obs_buffer = generate_random_obs(self.obs_space)
+        self.obs_buffer = generate_null_obs(self.obs_space)
 
         inter_text = input("Enter a new textual instruction here:")
         self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
@@ -438,7 +438,7 @@ class CORE_FUNC():
 
         # model inference____
 
-        while inf_action != 0: # done is not called
+        while True: # done is not called
             
             # get obs
             self.observations = self.middleware.obs_buffer
