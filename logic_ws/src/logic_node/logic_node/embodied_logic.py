@@ -202,7 +202,7 @@ class PublishThread(threading.Thread):
         super(PublishThread, self).__init__()
 
         self.node = node
-        self.publisher = node.create_publisher(Twist, 'a200_0000/cmd_vel', 10)
+        self.publisher = node.create_publisher(Twist, '/a200_0000/cmd_vel/wcnm', 10)
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
@@ -482,7 +482,7 @@ def main():
     rclpy.init(args=None)
     core = CORE_FUNC()
 
-    rclpy.spin(core.middleware)
+    rclpy.spin(MiddleWare())
 
     core.middleware.destroy_node()
     rclpy.spin.shutdown()
