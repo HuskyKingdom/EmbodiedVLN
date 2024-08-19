@@ -138,6 +138,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         if self.args.vir:
             cv2.imshow('EmvoidedVLN ZED2i Camera', rgb_image)
             cv2.waitKey(1)
+            print("showinging...")
 
         rgb_tensor = torch.from_numpy(rgb_image)
         
