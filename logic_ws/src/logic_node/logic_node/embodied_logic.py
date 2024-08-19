@@ -169,11 +169,11 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
     def cml_action(self):
 
-        end_flag = 0
-        while end_flag != -1:
+        while True:
             action_index = input("Enter an action index to perform (-1 to exit):")
+            if int(action_index) == -1:
+                break
             self.send_command(int(action_index))
-            end_flag = action_index
 
 class DistanceTracker(Node):
     def __init__(self):
