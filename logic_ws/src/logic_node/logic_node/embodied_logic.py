@@ -93,6 +93,8 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         self.publish_thread = PublishThread(self, rate=10)
 
+        self.cml_action()
+
         # obervation buffers
         self.obs_space = gym.spaces.Dict({
             "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
@@ -438,7 +440,7 @@ class CORE_FUNC():
 
         # model inference____
 
-        while inf_action != 3: # done is not called
+        while inf_action != 0: # done is not called
             
             # get obs
             self.observations = self.middleware.obs_buffer
