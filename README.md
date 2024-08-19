@@ -135,7 +135,7 @@ colcon build --symlink-install
 Starting ZED nodes by:
 
 ```
-ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
+ROS_DOMAIN_ID=0 ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
 ```
 
 
