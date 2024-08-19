@@ -244,7 +244,7 @@ class PublishThread(threading.Thread):
 
     def stop(self):
         self.done = True
-        self.update(4)
+        self.update(0)
         self.join()
 
     def run(self):
