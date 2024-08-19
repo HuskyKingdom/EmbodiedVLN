@@ -17,7 +17,7 @@ else:
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
-from .utils.common import text_to_tensor,load_vocab,generate_random_obs
+from .utils.common import text_to_tensor,load_vocab,generate_random_obs,generate_null_obs
 
 
 # import sys
@@ -101,7 +101,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
             "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
             "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
         })
-        self.obs_buffer = generate_random_obs(self.obs_space)
+        self.obs_buffer = generate_null_obs(self.obs_space)
         
         # tokenlize instruction
         self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
@@ -167,7 +167,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         depth_image_normalized = depth_image_normalized.astype(np.uint8)
 
         # downsampling
-        rgb_image = downsampling(rgb_image,256,256)
+        depth_image_normalized = downsampling(depth_image_normalized,256,256)
 
         depth_tensor = torch.from_numpy(depth_image_normalized).float()
         depth_tensor = depth_tensor.unsqueeze(-1)
@@ -431,6 +431,10 @@ class CORE_FUNC():
         not_done_masks = torch.zeros(
             1, 1, dtype=torch.uint8, device=self.device
         )
+
+        # waiting for sensoring
+        while self.middleware.obs_buffer["rgb"] == None:
+            print("Waiting for sensoring...")
 
         # model inference____
 

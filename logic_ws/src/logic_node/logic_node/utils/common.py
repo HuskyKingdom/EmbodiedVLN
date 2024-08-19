@@ -85,6 +85,13 @@ def generate_random_obs(space):
             random_obs[key] = torch.rand(size=box.shape, dtype=torch.float32)
     return random_obs
 
+def generate_null_obs(space):
+    null_obs = {}
+    for key, box in space.spaces.items():
+        null_obs[key] = None
+    return null_obs
+
+
 def batch_obs(observations: Dict[str, torch.Tensor], device: torch.device) -> Dict[str, torch.Tensor]:
     batched_obs = {}
     for key, tensor in observations.items():
