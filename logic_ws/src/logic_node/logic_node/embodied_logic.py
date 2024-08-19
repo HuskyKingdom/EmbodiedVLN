@@ -92,22 +92,21 @@ class MiddleWare(Node): # sub to obs, pub to act.
             10)
         
         self.publish_thread = PublishThread(self, rate=10)
-        self.start_cml()
 
 
-        # # obervation buffers
-        # self.obs_space = gym.spaces.Dict({
-        #     "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
-        #     "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
-        #     "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
-        # })
-        # self.obs_buffer = generate_random_obs(self.obs_space)
+        # obervation buffers
+        self.obs_space = gym.spaces.Dict({
+            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
+            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
+        })
+        self.obs_buffer = generate_random_obs(self.obs_space)
         
-        # # tokenlize instruction
-        # self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
-        # self.vocab = load_vocab(self.vocab)
-        # inter_text = input("Enter a new textual instruction here:")
-        # self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
+        # tokenlize instruction
+        self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+        self.vocab = load_vocab(self.vocab)
+        inter_text = input("Enter a new textual instruction here:")
+        self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
         
 
@@ -164,9 +163,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
         self.publish_thread.stop()
 
 
-    def start_cml(self):
-        inference_thread = threading.Thread(target=self.cml_action)
-        inference_thread.start()
+
         
     def cml_action(self):
 
@@ -402,26 +399,33 @@ class CORE_FUNC():
 
         # middleware
         self.middleware = MiddleWare()
-        # self.observations = self.middleware.obs_buffer
+        self.observations = self.middleware.obs_buffer
 
-        # action_space = 4
+        action_space = 4
 
-        # obs_space = gym.spaces.Dict({
-        #     "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
-        #     "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
-        #     "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
-        # })
+        obs_space = gym.spaces.Dict({
+            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
+            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
+        })
 
-        # # load policy
-        # self.policy = CMAPolicy(obs_space,action_space)
-        # self.policy.to("cuda")
-        # ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
-        # self.policy.load_state_dict(ckpt_dict["state_dict"])
-        # self.policy.eval()
+        # load policy
+        self.policy = CMAPolicy(obs_space,action_space)
+        self.policy.to("cuda")
+        ckpt_dict = torch.load("/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/checkpoints/CMA_PM_DA_Aug.pth",map_location="cpu")
+        self.policy.load_state_dict(ckpt_dict["state_dict"])
+        self.policy.eval()
 
-        # input("Start Inference?")
+        input("Start Inference?")
 
-        # self.inference()
+        self.start_inference() # starting thread
+
+    
+    def start_inference(self):
+        inference_thread = threading.Thread(target=self.inference)
+        inference_thread.start()
+
+        
 
     
 
