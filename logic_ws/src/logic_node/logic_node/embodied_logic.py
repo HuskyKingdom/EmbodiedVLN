@@ -95,19 +95,19 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         self.start_cml()
 
-        # obervation buffers
-        self.obs_space = gym.spaces.Dict({
-            "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
-            "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
-            "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
-        })
-        self.obs_buffer = generate_random_obs(self.obs_space)
+        # # obervation buffers
+        # self.obs_space = gym.spaces.Dict({
+        #     "instruction": gym.spaces.Box(low=0, high=255, shape=(1,), dtype=np.uint8),
+        #     "rgb": spaces.Box(low=0, high=255, shape=(256, 256, 3), dtype=np.uint8),
+        #     "depth": spaces.Box(low=0, high=1, shape=(256, 256, 1), dtype=np.float32),
+        # })
+        # self.obs_buffer = generate_random_obs(self.obs_space)
         
-        # tokenlize instruction
-        self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
-        self.vocab = load_vocab(self.vocab)
-        inter_text = input("Enter a new textual instruction here:")
-        self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
+        # # tokenlize instruction
+        # self.vocab = "/home/ros2-agv-essentials/deeplab_ws/src/logic_node/logic_node/data/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz"
+        # self.vocab = load_vocab(self.vocab)
+        # inter_text = input("Enter a new textual instruction here:")
+        # self.obs_buffer["instruction"] = text_to_tensor(inter_text,self.vocab)
 
         
 
@@ -487,6 +487,11 @@ def main():
     core = CORE_FUNC()
 
     rclpy.spin(core.middleware)
+    print("spined ...")
+    core.middleware.destroy_node()
+    rclpy.spin.shutdown()
+
+
     
 
 
