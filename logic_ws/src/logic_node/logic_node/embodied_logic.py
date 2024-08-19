@@ -137,6 +137,9 @@ class MiddleWare(Node): # sub to obs, pub to act.
         
         if rgb_image.shape[2] == 4: # rm alpha channal
             rgb_image = rgb_image[:, :, :3] 
+        
+        # downsampling
+        rgb_image = downsampling(rgb_image,256,256)
 
         if self.args.vir:
             cv2.imshow('EmvoidedVLN ZED2i Camera', rgb_image)
@@ -162,6 +165,10 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
         depth_image_normalized = depth_image_normalized.astype(np.uint8)
+
+        # downsampling
+        rgb_image = downsampling(rgb_image,256,256)
+
         depth_tensor = torch.from_numpy(depth_image_normalized).float()
         depth_tensor = depth_tensor.unsqueeze(-1)
         self.obs_buffer["depth"] = depth_tensor
@@ -361,7 +368,7 @@ from gym import spaces
 
 # logic 
 from .policy.cma_policy import CMAPolicy
-from .utils.common import batch_obs
+from .utils.common import batch_obs,downsampling
 import torch
 
 

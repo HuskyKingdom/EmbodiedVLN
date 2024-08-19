@@ -5,6 +5,7 @@ from gym import spaces
 import gzip
 import json
 import numpy as np
+import cv2
 
 from typing import (
     TYPE_CHECKING,
@@ -67,6 +68,11 @@ def single_frame_box_shape(box: spaces.Box) -> spaces.Box:
         shape=box.shape[1:],
         dtype=box.high.dtype,
     )
+
+
+def downsampling(src,h,w):
+    result = cv2.resize(src, (h, w), interpolation=cv2.INTER_LINEAR)
+    return result
 
 
 
