@@ -133,7 +133,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
     def rgb_callback(self,data):
         rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
-        self.obs_buffer["rgb"] = rgb_image
+        self.obs_buffer["rgb"] = torch.from_numpy(rgb_image)
 
         if self.args.vir:
             print(f"Showing img with {data.height} / {data.width}")
@@ -151,7 +151,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
 
         depth_image_normalized = cv2.normalize(depth_image, None, 0, 255, cv2.NORM_MINMAX)
         depth_image_normalized = depth_image_normalized.astype(np.uint8)
-        self.obs_buffer["depth"] = depth_image_normalized
+        self.obs_buffer["depth"] = torch.from_numpy(depth_image_normalized)
 
         # depth_image = np.frombuffer(data.data, dtype=np.float32).reshape(data.height, data.width)
 
