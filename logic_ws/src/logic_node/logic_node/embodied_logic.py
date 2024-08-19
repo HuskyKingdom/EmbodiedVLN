@@ -473,9 +473,16 @@ class CORE_FUNC():
                 
 
                 inf_action = output
+                
 
+                # self.middleware.resample_random() # rm, testing only
 
-                self.middleware.resample_random() # rm, testing only
+            if inf_action == 0: # stopped
+                usr_input = input("Continou?")
+                if usr_input == "-1": # exit
+                    break
+                else:
+                    self.middleware.clear_buffers()
 
                 
 
