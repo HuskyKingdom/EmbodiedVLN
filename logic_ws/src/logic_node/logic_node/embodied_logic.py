@@ -92,6 +92,7 @@ class MiddleWare(Node): # sub to obs, pub to act.
             10)
         
         self.publish_thread = PublishThread(self, rate=10)
+        self.start_cml()
 
 
         # # obervation buffers
@@ -162,6 +163,10 @@ class MiddleWare(Node): # sub to obs, pub to act.
     def stop(self):
         self.publish_thread.stop()
 
+
+    def start_cml(self):
+        inference_thread = threading.Thread(target=self.cml_action)
+        inference_thread.start()
         
     def cml_action(self):
 
@@ -202,7 +207,7 @@ class PublishThread(threading.Thread):
         super(PublishThread, self).__init__()
 
         self.node = node
-        self.publisher = node.create_publisher(Twist, 'sdkajhsdka', 10)
+        self.publisher = node.create_publisher(Twist, 'a200_0000/cmd_vel', 10)
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
@@ -482,7 +487,7 @@ def main():
     rclpy.init(args=None)
     core = CORE_FUNC()
 
-    rclpy.spin(MiddleWare())
+    rclpy.spin(core.middleware)
 
     core.middleware.destroy_node()
     rclpy.spin.shutdown()
