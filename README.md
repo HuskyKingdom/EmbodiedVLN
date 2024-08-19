@@ -135,7 +135,7 @@ colcon build --symlink-install
 Starting ZED nodes by:
 
 ```
-ROS_DOMAIN_ID=0 ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
+ros2 launch zed_wrapper zed_camera.launch.py camera_model:=zed2i
 ```
 
 
@@ -188,6 +188,7 @@ python3 -m pip install -r requirements.txt
 Then start up the embodied middleware nodes by:
 
 ```
+source ~/.bashrc
 ros2 run logic_node embodied_core
 ```
 
