@@ -74,9 +74,10 @@ moveBindings = {
 
 class MiddleWare(Node): # sub to obs, pub to act.
 
-    def __init__(self):
+    def __init__(self,args):
         
         super().__init__('middleware_node')
+        self.args = args
         self.bridge = CvBridge()
 
         self.rgb_suber = self.create_subscription(
@@ -133,6 +134,12 @@ class MiddleWare(Node): # sub to obs, pub to act.
     def rgb_callback(self,data):
         rgb_image = np.frombuffer(data.data, dtype=np.uint8).reshape(data.height, data.width, -1)
         self.obs_buffer["rgb"] = rgb_image
+
+        if self.args.vir:
+            print(f"Showing img with {data.height} / {data.width}")
+            cv2.imshow('EmvoidedVLN ZED2i Camera', rgb_image)
+            cv2.waitKey(1)
+
         
       
     def dep_callback(self,data):
@@ -317,58 +324,13 @@ import argparse
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Road Making System")
+    parser = argparse.ArgumentParser(description="Embodied VLN")
 
     parser.add_argument(
-        "--wheel_radius",
-        default=0.165,
-        type=float,
-    )
-
-    parser.add_argument(
-        "--wheel_base",
-        default=0.42,
-        type=float,
-    )
-
-    parser.add_argument(
-        "--agent_speed",
-        default=0.1,
-        type=float,
-    )
-
-    parser.add_argument(
-        "--target_distance",
-        default=1,
-        type=float,
-    )
-
-
-    parser.add_argument(
-        "--kp",
-        default=3.05,
-        type=float,
-    )
-
-    parser.add_argument(
-        "--ki",
+        "--vir",
         default=0,
-        type=float,
-    )
-
-    parser.add_argument(
-        "--kd",
-        default=1.2,
-        type=float,
-    )
-
-
-    parser.add_argument(
-        "--side",  # 0-left 1=right
-        default=1,
         type=int,
     )
-
 
     args = parser.parse_args()
 
@@ -392,13 +354,14 @@ import torch
 
 class CORE_FUNC():
 
-    def __init__(self):
+    def __init__(self,args):
 
         # init
         self.device = "cuda"
+        self.args=args
 
         # middleware
-        self.middleware = MiddleWare()
+        self.middleware = MiddleWare(args)
         self.observations = self.middleware.obs_buffer
 
         action_space = 4
@@ -496,7 +459,7 @@ def main():
     settings = saveTerminalSettings()
 
     rclpy.init(args=None)
-    core = CORE_FUNC()
+    core = CORE_FUNC(args)
 
     rclpy.spin(core.middleware)
 
